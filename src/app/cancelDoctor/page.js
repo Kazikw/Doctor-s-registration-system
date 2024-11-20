@@ -2,110 +2,80 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import './cancelDoctor.css'
 
 function cancelDoctor(props) {
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [pesel, setPesel] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [surnameError, setSurnameError] = useState("");
-  const [peselError, setPeselError] = useState("");
-
   const router = useRouter();
+  const navigateTo = (path) => () => router.push(path);
 
-  function onButtonClick() {
-    setNameError("");
-    setSurnameError("");
-    setPeselError("");
-    setPasswordError("");
-    
-
-    if ("" === name) {
-      setNameError("Proszę wprowadzić imię");
-      return;
-    }
-
-    if ("" === surname) {
-      setSurnameError("Proszę wprowadzić nazwisko");
-      return;
-    }
-
-    if (pesel.length !== 11) {
-      setPeselError("Proszę wprowadzić prawidłowy numer pesel");
-      return;
-    }
-
-    if ("" === password) {
-      setPasswordError("Proszę wprowadzić prawidłowe hasło");
-      return;
-    }
-
-    if (password.length < 7) {
-      setPasswordError("Hasło musi mieć przynajmniej 8 znaków");
-      return;
-    }
-    
-    router.push("/dashboard");
-  }
+  const [doctors, setDoctors] = useState([
+    {
+      id: 1,
+      name: "Dr. Anna Kowalska",
+      specialization: "Internista",
+      date: "2024-11-21",
+      time: "10:00",  
+    },
+    {
+      id: 2,
+      name: "Dr. Jan Nowak",
+      specialization: "Kardiolog",
+      date: "2024-11-05",
+      time: "14:00",
+    },
+  ]);
 
   return (
     <div className="mainContainer">
       <div className="titleContainer">
-        <div>Odwołaj wizytę(placeholder)</div>
+        <h1>Lista wizyt pacjenta</h1>
       </div>
-      {/* <br />
-      <div className="inputContainer">
-        <input
-          value={name}
-          placeholder="Wpisz swoje imie"
-          onChange={(ev) => setName(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{nameError}</label>
+      <div className="content">
+        {doctors.length > 0 ? (
+          <table className="resultsTable">
+            <thead>
+              <tr>
+                <th>Imię i nazwisko</th>
+                <th>Specjalizacja</th>
+                <th>Data</th>
+                <th>Godzina</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {doctors.map((doctor) => (
+                <tr key={doctor.id}>
+                  <td>{doctor.name}</td>
+                  <td>{doctor.specialization}</td>
+                  <td>{doctor.date}</td>
+                  <td>{doctor.time}</td>
+                  <td>
+                    {doctor.date !== "2024-11-05" ? (
+                      <a
+                        className="inputButton"
+                      >
+                        Odwołaj wizytę
+                      </a>
+                    ) : (
+                      <span className="pendingLabel">Nie można odwołać</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Brak dostępnych badań</p>
+        )}
       </div>
-      <br />
-      <div className="inputContainer">
+      <div className="buttonContainer">
         <input
-          value={surname}
-          type="text"
-          placeholder="Wpisz swoje nazwisko"
-          onChange={(ev) => setSurname(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{surnameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={pesel}
-          placeholder="Wpisz swój numer PESEL"
-          onChange={(ev) => setPesel(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{peselError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={password}
-          type="password"
-          placeholder="Wpisz swoje hasło"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value="Stwórz konto"
-          type="button"
-          onClick={onButtonClick}
           className="inputButton"
-        />
-      </div> */}
+          type="button"
+          onClick={navigateTo('/dashboard')}
+          value="Wroć do panelu głównego"
+        ></input>
+      </div>
     </div>
   );
 }

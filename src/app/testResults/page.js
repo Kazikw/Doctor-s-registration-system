@@ -1,113 +1,90 @@
 'use client'
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import './testResults.css'
 
-function testResults(props) {
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [pesel, setPesel] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [surnameError, setSurnameError] = useState("");
-  const [peselError, setPeselError] = useState("");
-
+function TestResults() {
   const router = useRouter();
+  const navigateTo = (path) => () => router.push(path);
 
-  function onButtonClick() {
-    setNameError("");
-    setSurnameError("");
-    setPeselError("");
-    setPasswordError("");
-    
-
-    if ("" === name) {
-      setNameError("Proszę wprowadzić imię");
-      return;
+  const [tests, setTests] = useState([
+    {
+      id: 1,
+      name: "Morfologia krwi",
+      date: "2024-11-15",
+      status: "Zakończone",
+      result: "/results/morfologia.pdf"
+    },
+    {
+      id: 2,
+      name: "Badanie moczu",
+      date: "2024-11-10",
+      status: "W trakcie",
+      result: null
+    },
+    {
+      id: 3,
+      name: "Test na COVID-19",
+      date: "2024-11-05",
+      status: "Zakończone",
+      result: "/results/covid.pdf"
     }
-
-    if ("" === surname) {
-      setSurnameError("Proszę wprowadzić nazwisko");
-      return;
-    }
-
-    if (pesel.length !== 11) {
-      setPeselError("Proszę wprowadzić prawidłowy numer pesel");
-      return;
-    }
-
-    if ("" === password) {
-      setPasswordError("Proszę wprowadzić prawidłowe hasło");
-      return;
-    }
-
-    if (password.length < 7) {
-      setPasswordError("Hasło musi mieć przynajmniej 8 znaków");
-      return;
-    }
-    
-    router.push("/dashboard");
-  }
+  ]);
 
   return (
     <div className="mainContainer">
       <div className="titleContainer">
-        <div>Odbierz wyniki(placeholder)</div>
+        <h1>Historia badań</h1>
       </div>
-      {/* <br />
-      <div className="inputContainer">
-        <input
-          value={name}
-          placeholder="Wpisz swoje imie"
-          onChange={(ev) => setName(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{nameError}</label>
+      <div className="content">
+        {tests.length > 0 ? (
+          <table className="resultsTable">
+            <thead>
+              <tr>
+                <th>Nazwa badania</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tests.map((test) => (
+                <tr key={test.id}>
+                  <td>{test.name}</td>
+                  <td>{test.date}</td>
+                  <td>{test.status}</td>
+                  <td>
+                    {test.status === "Zakończone" ? (
+                      <a
+                        href={test.result}
+                        className="inputButton"
+                        download
+                      >
+                        Pobierz wynik
+                      </a>
+                    ) : (
+                      <span className="pendingLabel">Wynik niedostępny</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Brak dostępnych badań</p>
+        )}
       </div>
-      <br />
-      <div className="inputContainer">
+      <div className="buttonContainer">
         <input
-          value={surname}
-          type="text"
-          placeholder="Wpisz swoje nazwisko"
-          onChange={(ev) => setSurname(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{surnameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={pesel}
-          placeholder="Wpisz swój numer PESEL"
-          onChange={(ev) => setPesel(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{peselError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={password}
-          type="password"
-          placeholder="Wpisz swoje hasło"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value="Stwórz konto"
-          type="button"
-          onClick={onButtonClick}
           className="inputButton"
-        />
-      </div> */}
+          type="button"
+          onClick={navigateTo('/dashboard')}
+          value="Wroć do panelu głównego"
+        ></input>
+      </div>
     </div>
   );
 }
 
-export default testResults;
+export default TestResults;

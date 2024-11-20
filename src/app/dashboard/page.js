@@ -1,84 +1,78 @@
 'use client'
-
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 function Dashboard() {
   const router = useRouter();
+  const navigateTo = (path) => () => router.push(path);
 
-  function onButtonClickRegisterTest() {
-    router.push("/registerTest");
-  }
 
-  function onButtonClickTestResults() {
-    router.push("/testResults")
-  }
-
-  function onButtonClickRegisterDoctor() {
-    router.push("/registerDoctor")
-  }
-
-  function onButtonClickCancelDoctor() {
-    router.push("/cancelDoctor")
-  }
-
-  function onButtonClickCancelTest() {
-    router.push("/cancelTest")
-  }
-
-  function onButtonClickLogOut() {
-    router.push("/")
-  }
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
 
   return(
   <div className="mainContainer">
     <div className="titleContainer">
       <h1>HANKMED</h1>
     </div>
+    <div className="header">
+      <h3>Jesteś zalogowany jako: {name || "Użytkownik"} {surname || "Testowy"}</h3>
+    </div>
+    <br />
+    <div className="welcome-section">
+      <p>Witaj w systemie zarządzania Twoimi wizytami i badaniami HANKMED!</p>
+    </div>
+    <br />
     <div className="nav">
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
-          onClick={onButtonClickTestResults}
+          onClick={navigateTo('/testResults')}
           value="Odbierz wyniki badań"
         ></input>
       </div>
+      <br />
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
-          onClick={onButtonClickRegisterTest}
+          onClick={navigateTo('/registerTest')}
           value="Zapisz się na badanie"
         ></input>
       </div>
+      <br />
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
-          onClick={onButtonClickRegisterDoctor}
+          onClick={navigateTo('/registerDoctor')}
           value="Zapisz się na wizytę"
         ></input>
       </div>
+      <br />
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
-          onClick={onButtonClickCancelTest}
+          onClick={navigateTo('/cancelTest')}
           value="Odwołaj badanie"
         ></input>
       </div>
+      <br />
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
-          onClick={onButtonClickCancelDoctor}
+          onClick={navigateTo('/cancelDoctor')}
           value="Odwołaj wizytę"
         ></input>
       </div>
+      <br />
       <div className="buttonContainer">
         <input
-          className="inputButton"
+          className="inputButton logout"
           type="button"
-          onClick={onButtonClickLogOut}
+          onClick={navigateTo('/')}
           value="Wyloguj się"
         ></input>
       </div>

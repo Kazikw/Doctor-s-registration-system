@@ -1,111 +1,106 @@
 'use client'
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-function RegisterDoctor(props) {
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [pesel, setPesel] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [surnameError, setSurnameError] = useState("");
-  const [peselError, setPeselError] = useState("");
+import './registerDoctor.css'
 
+function RegisterDoctor() {
   const router = useRouter();
+  const navigateTo = (path) => () => router.push(path);
 
-  function onButtonClick() {
-    setNameError("");
-    setSurnameError("");
-    setPeselError("");
-    setPasswordError("");
-    
+  const [doctors, setDoctors] = useState([
+    {
+      id: 1,
+      name: "Dr. Anna Kowalska",
+      specialization: "Internista",
+      availability: [
+        { date: "2024-11-21", time: "10:00" },
+        { date: "2024-11-22", time: "12:00" },
+      ],
+    },
+    {
+      id: 2,
+      name: "Dr. Jan Nowak",
+      specialization: "Kardiolog",
+      availability: [
+        { date: "2024-11-21", time: "14:00" },
+        { date: "2024-11-23", time: "09:00" },
+      ],
+    },
+    {
+      id: 3,
+      name: "Dr. Katarzyna Wiśniewska",
+      specialization: "Dermatolog",
+      availability: [
+        { date: "2024-11-20", time: "11:00" },
+        { date: "2024-11-24", time: "15:00" },
+      ],
+    },
+    {
+      id: 4,
+      name: "Dr. Katarzyna Śmigło",
+      specialization: "Alergolog",
+      availability: [
+        { date: "2024-11-27", time: "11:00" },
+        { date: "2024-11-30", time: "15:00" },
+      ],
+    },
+  ]);
 
-    if ("" === name) {
-      setNameError("Proszę wprowadzić imię");
-      return;
-    }
-
-    if ("" === surname) {
-      setSurnameError("Proszę wprowadzić nazwisko");
-      return;
-    }
-
-    if (pesel.length !== 11) {
-      setPeselError("Proszę wprowadzić prawidłowy numer pesel");
-      return;
-    }
-
-    if ("" === password) {
-      setPasswordError("Proszę wprowadzić prawidłowe hasło");
-      return;
-    }
-
-    if (password.length < 7) {
-      setPasswordError("Hasło musi mieć przynajmniej 8 znaków");
-      return;
-    }
-    
-    router.push("/dashboard");
+  function handleRegister(doctorId, appointment) {
+    alert(
+      `Zarejestrowano na wizytę u ${doctors.find(d => d.id === doctorId).name} dnia ${appointment.date} o godzinie ${appointment.time}`
+    );
   }
 
   return (
     <div className="mainContainer">
       <div className="titleContainer">
-        <div>Zapisz się na wizytę(placeholder)</div>
+        <h1>Zapisz się na wizytę</h1>
       </div>
-      {/* <br />
-      <div className="inputContainer">
-        <input
-          value={name}
-          placeholder="Wpisz swoje imie"
-          onChange={(ev) => setName(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{nameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={surname}
-          type="text"
-          placeholder="Wpisz swoje nazwisko"
-          onChange={(ev) => setSurname(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{surnameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={pesel}
-          placeholder="Wpisz swój numer PESEL"
-          onChange={(ev) => setPesel(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{peselError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={password}
-          type="password"
-          placeholder="Wpisz swoje hasło"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{passwordError}</label>
+      <div className="content">
+        {doctors.map((doctor) => (
+          <div key={doctor.id} className="doctorContainer">
+            <h2>{doctor.name}</h2>
+            <p>Specjalizacja: {doctor.specialization}</p>
+            <table className="availabilityTable">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Godzina</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {doctor.availability.map((appointment, index) => (
+                  <tr key={index}>
+                    <td>{appointment.date}</td>
+                    <td>{appointment.time}</td>
+                    <td>
+                      <button
+                        className="inputButton"
+                        onClick={() => handleRegister(doctor.id, appointment)}
+                      >
+                        Zapisz się
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
       </div>
       <br />
-      <div className="inputContainer">
+      <div className="buttonContainer">
         <input
-          value="Stwórz konto"
-          type="button"
-          onClick={onButtonClick}
           className="inputButton"
-        />
-      </div> */}
+          type="button"
+          onClick={navigateTo('/dashboard')}
+          value="Wroć do panelu głównego"
+        ></input>
+      </div>
     </div>
   );
 }

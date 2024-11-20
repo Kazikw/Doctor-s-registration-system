@@ -2,110 +2,77 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import './cancelTest.css'
 
 function cancelTest(props) {
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [pesel, setPesel] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [surnameError, setSurnameError] = useState("");
-  const [peselError, setPeselError] = useState("");
-
   const router = useRouter();
+  const navigateTo = (path) => () => router.push(path);
 
-  function onButtonClick() {
-    setNameError("");
-    setSurnameError("");
-    setPeselError("");
-    setPasswordError("");
-    
-
-    if ("" === name) {
-      setNameError("Proszę wprowadzić imię");
-      return;
+  const [tests, setTests] = useState([
+    {
+      id: 1,
+      name: "Morfologia krwi",
+      date: "2024-11-15",
+    },
+    {
+      id: 2,
+      name: "Badanie moczu",
+      date: "2024-11-10",
+    },
+    {
+      id: 3,
+      name: "Test na COVID-19",
+      date: "2024-11-05",
     }
-
-    if ("" === surname) {
-      setSurnameError("Proszę wprowadzić nazwisko");
-      return;
-    }
-
-    if (pesel.length !== 11) {
-      setPeselError("Proszę wprowadzić prawidłowy numer pesel");
-      return;
-    }
-
-    if ("" === password) {
-      setPasswordError("Proszę wprowadzić prawidłowe hasło");
-      return;
-    }
-
-    if (password.length < 7) {
-      setPasswordError("Hasło musi mieć przynajmniej 8 znaków");
-      return;
-    }
-    
-    router.push("/dashboard");
-  }
+  ]);
 
   return (
     <div className="mainContainer">
       <div className="titleContainer">
-        <div>Odwołaj badanie(placeholder)</div>
+        <h1>Lista badań pacjenta</h1>
       </div>
-      {/* <br />
-      <div className="inputContainer">
-        <input
-          value={name}
-          placeholder="Wpisz swoje imie"
-          onChange={(ev) => setName(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{nameError}</label>
+      <div className="content">
+        {tests.length > 0 ? (
+          <table className="resultsTable">
+            <thead>
+              <tr>
+                <th>Nazwa badania</th>
+                <th>Data</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tests.map((test) => (
+                <tr key={test.id}>
+                  <td>{test.name}</td>
+                  <td>{test.date}</td>
+                  <td>
+                    {test.date !== "2024-11-05" ? (
+                      <a
+                        className="inputButton"
+                      >
+                        Odwołaj badanie
+                      </a>
+                    ) : (
+                      <span className="pendingLabel">Nie można odwołać</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Brak dostępnych badań</p>
+        )}
       </div>
-      <br />
-      <div className="inputContainer">
+      <div className="buttonContainer">
         <input
-          value={surname}
-          type="text"
-          placeholder="Wpisz swoje nazwisko"
-          onChange={(ev) => setSurname(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{surnameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={pesel}
-          placeholder="Wpisz swój numer PESEL"
-          onChange={(ev) => setPesel(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{peselError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={password}
-          type="password"
-          placeholder="Wpisz swoje hasło"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value="Stwórz konto"
-          type="button"
-          onClick={onButtonClick}
           className="inputButton"
-        />
-      </div> */}
+          type="button"
+          onClick={navigateTo('/dashboard')}
+          value="Wroć do panelu głównego"
+        ></input>
+      </div>
     </div>
   );
 }

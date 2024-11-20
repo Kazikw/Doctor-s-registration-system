@@ -20,7 +20,9 @@ function Home(props) {
       <div className="titleContainer">
         <h1>HANKMED</h1>
       </div>
+      <br />
       <p>Stwórz konto:</p>
+      <br />
       <div className="buttonContainer">
         <input
           className="inputButton"
@@ -29,7 +31,9 @@ function Home(props) {
           value="Zarejestruj się"
         ></input>
       </div>
+      <br />
       <p>Mam już konto:</p>
+      <br />
       <div className="buttonContainer">
         <input
           className="inputButton"
