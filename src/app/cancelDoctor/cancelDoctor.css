@@ -1,0 +1,27 @@
+.resultsTable {
+  width: 1000px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 24px;
+}
+
+.resultsTable th, .resultsTable td {
+  padding: 16px 20px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.resultsTable th {
+  background-color: #f4f4f4;
+}
+
+.resultsTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+
+.pendingLabel {
+  color: #999;
+  font-style: italic;
+}
