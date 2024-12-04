@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import './cancelDoctor.css'
+import './cancelDoctor.css';
 
-function cancelDoctor(props) {
+function CancelDoctor(props) {
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
 
@@ -24,6 +24,21 @@ function cancelDoctor(props) {
       time: "14:00",
     },
   ]);
+
+  const [confirmingAppointmentId, setConfirmingAppointmentId] = useState(null);
+
+  const cancelAppointment = () => {
+    setDoctors(doctors.filter(doctor => doctor.id !== confirmingAppointmentId));
+    setConfirmingAppointmentId(null); // Zamknij modal po usunięciu wizyty
+  };
+
+  const openConfirmationModal = (id) => {
+    setConfirmingAppointmentId(id);
+  };
+
+  const closeConfirmationModal = () => {
+    setConfirmingAppointmentId(null);
+  };
 
   return (
     <div className="mainContainer">
@@ -51,11 +66,12 @@ function cancelDoctor(props) {
                   <td>{doctor.time}</td>
                   <td>
                     {doctor.date !== "2024-11-05" ? (
-                      <a
+                      <button
                         className="inputButton"
+                        onClick={() => openConfirmationModal(doctor.id)}
                       >
                         Odwołaj wizytę
-                      </a>
+                      </button>
                     ) : (
                       <span className="pendingLabel">Nie można odwołać</span>
                     )}
@@ -65,19 +81,38 @@ function cancelDoctor(props) {
             </tbody>
           </table>
         ) : (
-          <p>Brak dostępnych badań</p>
+          <p>Brak dostępnych wizyt</p>
         )}
       </div>
+
+      {/* Modal potwierdzenia */}
+      {confirmingAppointmentId && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Potwierdzenie</h2>
+            <p>Czy na pewno chcesz odwołać tę wizytę?</p>
+            <div className="modalButtons">
+              <button className="inputButton" onClick={cancelAppointment}>
+                Tak, odwołaj
+              </button>
+              <button className="inputButton" onClick={closeConfirmationModal}>
+                Nie, wróć
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
           onClick={navigateTo('/dashboard')}
-          value="Wroć do panelu głównego"
-        ></input>
+          value="Wróć do panelu głównego"
+        />
       </div>
     </div>
   );
 }
 
-export default cancelDoctor;
+export default CancelDoctor;

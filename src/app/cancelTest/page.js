@@ -26,6 +26,24 @@ function cancelTest(props) {
     }
   ]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [testToCancel, setTestToCancel] = useState(null);
+
+  const handleCancelTest = (test) => {
+    setTestToCancel(test);
+    setShowModal(true);
+  };
+
+  const confirmCancelTest = () => {
+    setTests(tests.filter((test) => test.id !== testToCancel.id));
+    setShowModal(false);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setTestToCancel(null);
+  };
+
   return (
     <div className="mainContainer">
       <div className="titleContainer">
@@ -50,6 +68,7 @@ function cancelTest(props) {
                     {test.date !== "2024-11-05" ? (
                       <a
                         className="inputButton"
+                        onClick={() => handleCancelTest(test)}
                       >
                         Odwołaj badanie
                       </a>
@@ -70,9 +89,27 @@ function cancelTest(props) {
           className="inputButton"
           type="button"
           onClick={navigateTo('/dashboard')}
-          value="Wroć do panelu głównego"
-        ></input>
+          value="Wróć do panelu głównego"
+        />
       </div>
+
+      {/* Modal Confirmation */}
+      {showModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Potwierdzenie</h2>
+            <p>Czy na pewno chcesz odwołać to badanie?</p>
+            <div className="modalButtons">
+              <button className="inputButton" onClick={confirmCancelTest}>
+                Tak, odwołaj
+              </button>
+              <button className="inputButton" onClick={closeModal}>
+                Nie, wróć
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
