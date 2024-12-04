@@ -48,11 +48,35 @@ function RegisterDoctor() {
     },
   ]);
 
+  const [confirmingAppointment, setConfirmingAppointment] = useState(null);
+
   function handleRegister(doctorId, appointment) {
-    alert(
-      `Zarejestrowano na wizytę u ${doctors.find(d => d.id === doctorId).name} dnia ${appointment.date} o godzinie ${appointment.time}`
-    );
+    setConfirmingAppointment({ doctorId, appointment });
   }
+
+  const confirmAppointment = () => {
+    const { doctorId, appointment } = confirmingAppointment;
+
+    // Remove the selected appointment
+    setDoctors((prevDoctors) =>
+      prevDoctors.map((doctor) =>
+        doctor.id === doctorId
+          ? {
+              ...doctor,
+              availability: doctor.availability.filter(
+                (a) => a.date !== appointment.date || a.time !== appointment.time
+              ),
+            }
+          : doctor
+      )
+    );
+
+    setConfirmingAppointment(null); // Zamknij modal po zapisaniu
+  };
+
+  const closeConfirmationModal = () => {
+    setConfirmingAppointment(null);
+  };
 
   return (
     <div className="mainContainer">
@@ -87,18 +111,45 @@ function RegisterDoctor() {
                     </td>
                   </tr>
                 ))}
+                {doctor.availability.length === 0 && (
+                  <tr>
+                    <td colSpan="3">Brak dostępnych terminów</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         ))}
       </div>
-      <br />
+
+      {/* Modal potwierdzenia */}
+      {confirmingAppointment && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Potwierdzenie</h2>
+            <p>
+              Czy na pewno chcesz zapisać się na wizytę dnia{" "}
+              {confirmingAppointment.appointment.date} o godzinie{" "}
+              {confirmingAppointment.appointment.time}?
+            </p>
+            <div className="modalButtons">
+              <button className="inputButton" onClick={confirmAppointment}>
+                Tak, zapisz
+              </button>
+              <button className="inputButton" onClick={closeConfirmationModal}>
+                Nie, wróć
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
-          onClick={navigateTo('/dashboard')}
-          value="Wroć do panelu głównego"
+          onClick={navigateTo("/dashboard")}
+          value="Wróć do panelu głównego"
         ></input>
       </div>
     </div>
