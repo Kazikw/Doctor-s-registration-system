@@ -2,106 +2,88 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { auth, signInWithEmailAndPassword } from "../firebase";
 
-function Login(props) {
-
+function Login() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [pesel, setPesel] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [surnameError, setSurnameError] = useState("");
-  const [peselError, setPeselError] = useState("");
-
   const router = useRouter();
+  
+  const handleLogin = async () => {
+    setEmailError("");
+    setPasswordError("");
 
-    function onButtonClick() {
-      setNameError("");
-      setSurnameError("");
-      setPeselError("");
-      setPasswordError("");
-      
-  
-      // if ("" === name) {
-      //   setNameError("Proszę wprowadzić imię");
-      //   return;
-      // }
-  
-      // if ("" === surname) {
-      //   setSurnameError("Proszę wprowadzić nazwisko");
-      //   return;
-      // }
-  
-      if (pesel.length !== 11) {
-        setPeselError("Proszę wprowadzić prawidłowy numer pesel");
-        return;
-      }
-  
-      if ("" === password) {
-        setPasswordError("Proszę wprowadzić prawidłowe hasło");
-        return;
-      }
-      
-      router.push("/dashboard");
+    if (email === "") {
+      setEmailError("Proszę wprowadzić adres e-mail");
+      return;
     }
 
-  return(<div className="mainContainer">
-    <div className="titleContainer">
-      <div>Zaloguj się</div>
+    if (password === "") {
+      setPasswordError("Proszę wprowadzić prawidłowe hasło");
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log("Zalogowano pomyślnie!", user);
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Błąd logowania: ", error.message);
+      setPasswordError("Nieprawidłowy e-mail lub hasło.");
+    }
+  };
+
+  const handleBackButtonClick = () => {
+    router.push("/");
+  };
+
+  return (
+    <div className="mainContainer">
+      <div className="titleContainer">
+        <div>Zaloguj się</div>
+      </div>
+      <br />
+      <div className="inputContainer">
+        <input
+          value={email}
+          type="email"
+          placeholder="Wpisz swój adres e-mail"
+          onChange={(ev) => setEmail(ev.target.value)}
+          className="inputBox"
+        />
+        <label className="errorLabel">{emailError}</label>
+      </div>
+      <br />
+      <div className="inputContainer">
+        <input
+          value={password}
+          type="password"
+          placeholder="Wpisz swoje hasło"
+          onChange={(ev) => setPassword(ev.target.value)}
+          className="inputBox"
+        />
+        <label className="errorLabel">{passwordError}</label>
+      </div>
+      <br />
+      <div className="inputContainer">
+        <input
+          value="Zaloguj się"
+          type="button"
+          onClick={handleLogin}
+          className="inputButton"
+        />
+      </div>
+      <div className="backButtonContainer">
+        <button onClick={handleBackButtonClick} className="backButton">
+          Wstecz
+        </button>
+      </div>
     </div>
-    <br />
-    {/* <div className="inputContainer">
-      <input
-        value={name}
-        placeholder="Wpisz swoje imie"
-        onChange={(ev) => setName(ev.target.value)}
-        className="inputBox"
-      />
-      <label className="errorLabel">{nameError}</label>
-    </div>
-    <br />
-    <div className="inputContainer">
-      <input
-        value={surname}
-        type="text"
-        placeholder="Wpisz swoje nazwisko"
-        onChange={(ev) => setSurname(ev.target.value)}
-        className="inputBox"
-      />
-      <label className="errorLabel">{surnameError}</label>
-    </div>
-    <br /> */}
-    <div className="inputContainer">
-      <input
-        value={pesel}
-        placeholder="Wpisz swój numer PESEL"
-        onChange={(ev) => setPesel(ev.target.value)}
-        className="inputBox"
-      />
-      <label className="errorLabel">{peselError}</label>
-    </div>
-    <br />
-    <div className="inputContainer">
-      <input
-        value={password}
-        type="password"
-        placeholder="Wpisz swoje hasło"
-        onChange={(ev) => setPassword(ev.target.value)}
-        className="inputBox"
-      />
-      <label className="errorLabel">{passwordError}</label>
-    </div>
-    <br />
-    <div className="inputContainer">
-      <input
-        value="Zaloguj się"
-        type="button"
-        onClick={onButtonClick}
-        className="inputButton"
-      />
-    </div>
-  </div>);
+  );
 }
 
 export default Login;

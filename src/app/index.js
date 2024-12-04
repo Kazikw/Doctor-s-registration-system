@@ -16,31 +16,45 @@ function Home(props) {
 
   return (
     <div className="mainContainer">
-      {/* <Navbar /> */}
+      {/* Tytuł strony */}
       <div className="titleContainer">
-        <h1>HANKMED</h1>
+        <h1>HankMed</h1>
       </div>
-      <br />
-      <p>Stwórz konto:</p>
-      <br />
-      <div className="buttonContainer">
-        <input
-          className="inputButton"
-          type="button"
-          onClick={onButtonClickRegister}
-          value="Zarejestruj się"
-        ></input>
-      </div>
-      <br />
-      <p>Mam już konto:</p>
-      <br />
-      <div className="buttonContainer">
-        <input
-          className="inputButton"
-          type="button"
-          onClick={onButtonClickLogin}
-          value="Zaloguj się"
-        ></input>
+
+      {/* Kontener dla sekcji rejestracji i logowania */}
+      <div className="loginRegisterContainer">
+        {/* Sekcja rejestracji */}
+        <div className="formContainer">
+          <div className="titleRow">
+            <p>Stwórz konto:</p>
+          </div>
+          <div className="buttonRow">
+            <input
+              className="inputButton"
+              type="button"
+              onClick={onButtonClickRegister}
+              value="Zarejestruj się"
+            ></input>
+          </div>
+        </div>
+
+        {/* Pionowa linia oddzielająca */}
+        <div className="separator"></div>
+
+        {/* Sekcja logowania */}
+        <div className="formContainer">
+          <div className="titleRow">
+            <p>Mam już konto:</p>
+          </div>
+          <div className="buttonRow">
+            <input
+              className="inputButton"
+              type="button"
+              onClick={onButtonClickLogin}
+              value="Zaloguj się"
+            ></input>
+          </div>
+        </div>
       </div>
     </div>
   );

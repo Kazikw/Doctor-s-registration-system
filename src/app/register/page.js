@@ -1,34 +1,36 @@
 'use client'
 
-import { useRouter } from "next/navigation";
-// import "./Register.css";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { auth, db, createUserWithEmailAndPassword, addDoc, collection } from "../firebase";
 
 function Register(props) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [pesel, setPesel] = useState("");
+  const [email, setEmail] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [nameError, setNameError] = useState("");
   const [surnameError, setSurnameError] = useState("");
   const [peselError, setPeselError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const router = useRouter();
 
-  function onButtonClick() {
+  const handleRegister = async () => {
     setNameError("");
     setSurnameError("");
     setPeselError("");
     setPasswordError("");
-    
+    setEmailError("");
 
-    if ("" === name) {
+    if (name === "") {
       setNameError("Proszę wprowadzić imię");
       return;
     }
 
-    if ("" === surname) {
+    if (surname === "") {
       setSurnameError("Proszę wprowadzić nazwisko");
       return;
     }
@@ -38,7 +40,12 @@ function Register(props) {
       return;
     }
 
-    if ("" === password) {
+    if (email === "") {
+      setEmailError("Proszę wprowadzić adres e-mail");
+      return;
+    }
+
+    if (password === "") {
       setPasswordError("Proszę wprowadzić prawidłowe hasło");
       return;
     }
@@ -47,9 +54,31 @@ function Register(props) {
       setPasswordError("Hasło musi mieć przynajmniej 8 znaków");
       return;
     }
-    
-    router.push("/dashboard");
-  }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      
+      await addDoc(collection(db, "users"), {
+        name,
+        surname,
+        pesel,
+        email: user.email,
+        uid: user.uid
+      });
+
+      console.log("Użytkownik zarejestrowany!");
+      await router.push("/dashboard");
+    } catch (error) {
+      console.error("Błąd rejestracji: ", error.message);
+      setPasswordError("Coś poszło nie tak, spróbuj ponownie.");
+    }
+  };
+
+  const handleBackButtonClick = () => {
+    router.push("/");
+  };
 
   return (
     <div className="mainContainer">
@@ -60,7 +89,7 @@ function Register(props) {
       <div className="inputContainer">
         <input
           value={name}
-          placeholder="Wpisz swoje imie"
+          placeholder="Wpisz swoje imię"
           onChange={(ev) => setName(ev.target.value)}
           className="inputBox"
         />
@@ -90,6 +119,17 @@ function Register(props) {
       <br />
       <div className="inputContainer">
         <input
+          value={email}
+          type="email"
+          placeholder="Wpisz swój adres email"
+          onChange={(ev) => setEmail(ev.target.value)}
+          className="inputBox"
+        />
+        <label className="errorLabel">{emailError}</label>
+      </div>
+      <br />
+      <div className="inputContainer">
+        <input
           value={password}
           type="password"
           placeholder="Wpisz swoje hasło"
@@ -103,9 +143,14 @@ function Register(props) {
         <input
           value="Stwórz konto"
           type="button"
-          onClick={onButtonClick}
+          onClick={handleRegister} // Zmieniamy na handleRegister
           className="inputButton"
         />
+      </div>
+      <div className="backButtonContainer">
+        <button onClick={handleBackButtonClick} className="backButton">
+          Wstecz
+        </button>
       </div>
     </div>
   );
