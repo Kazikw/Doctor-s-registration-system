@@ -143,7 +143,7 @@ function Register(props) {
         <input
           value="Stwórz konto"
           type="button"
-          onClick={handleRegister} // Zmieniamy na handleRegister
+          onClick={handleRegister}
           className="inputButton"
         />
       </div>

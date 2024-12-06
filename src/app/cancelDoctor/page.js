@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,10 +26,11 @@ function CancelDoctor(props) {
   ]);
 
   const [confirmingAppointmentId, setConfirmingAppointmentId] = useState(null);
+  const [hoverMessage, setHoverMessage] = useState(""); // Komunikat o odwołaniu
 
   const cancelAppointment = () => {
     setDoctors(doctors.filter(doctor => doctor.id !== confirmingAppointmentId));
-    setConfirmingAppointmentId(null); // Zamknij modal po usunięciu wizyty
+    setConfirmingAppointmentId(null);
   };
 
   const openConfirmationModal = (id) => {
@@ -38,6 +39,14 @@ function CancelDoctor(props) {
 
   const closeConfirmationModal = () => {
     setConfirmingAppointmentId(null);
+  };
+
+  const handleHover = () => {
+    setHoverMessage("Upłynął czas na odwołanie wizyty"); // Ustawiamy komunikat
+  };
+
+  const handleHoverOut = () => {
+    setHoverMessage(""); // Czyścimy komunikat
   };
 
   return (
@@ -73,7 +82,13 @@ function CancelDoctor(props) {
                         Odwołaj wizytę
                       </button>
                     ) : (
-                      <span className="pendingLabel">Nie można odwołać</span>
+                      <span
+                        className="pendingLabel"
+                        onMouseEnter={handleHover}
+                        onMouseLeave={handleHoverOut}
+                      >
+                        Nie można odwołać
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -84,6 +99,13 @@ function CancelDoctor(props) {
           <p>Brak dostępnych wizyt</p>
         )}
       </div>
+
+      {/* Komunikat przy najechaniu */}
+      {hoverMessage && (
+        <div className="hoverMessage">
+          <p>{hoverMessage}</p>
+        </div>
+      )}
 
       {/* Modal potwierdzenia */}
       {confirmingAppointmentId && (

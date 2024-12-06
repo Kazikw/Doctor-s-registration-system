@@ -52,3 +52,38 @@
   justify-content: space-around;
   margin-top: 20px;
 }
+
+.pendingLabel {
+  color: gray; /* Domyślny kolor tekstu */
+  cursor: not-allowed; /* Wskazuje, że opcja jest niedostępna */
+  transition: color 0.3s ease; /* Płynne przejście */
+}
+
+.pendingLabel:hover {
+  color: red;
+}
+
+.hoverMessage {
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(246, 95, 95, 0.9); /* Czerwone tło */
+  color: white; /* Biały tekst */
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
