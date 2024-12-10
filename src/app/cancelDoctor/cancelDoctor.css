@@ -27,16 +27,15 @@
 }
 
 .modalOverlay {
-  position: fixed; /* Modal przykrywa cały ekran */
-  top: 0;
+  position: fixed; 
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Modal jest na najwyższym poziomie */
+  z-index: 1000; 
 }
 
 .modalContent {
@@ -44,7 +43,7 @@
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  z-index: 1010; /* Treść modala wyżej niż overlay */
+  z-index: 1010; 
 }
 
 .modalButtons {
@@ -60,7 +59,7 @@
 }
 
 .pendingLabel:hover {
-  color: red;
+  color: #ff0000;
 }
 
 .hoverMessage {
@@ -68,8 +67,8 @@
   bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(246, 95, 95, 0.9); /* Czerwone tło */
-  color: white; /* Biały tekst */
+  background-color: #ff5555; 
+  color: white; 
   padding: 10px 20px;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

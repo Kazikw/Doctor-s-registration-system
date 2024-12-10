@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import './cancelTest.css'
+import './cancelTest.css';
 
-function cancelTest(props) {
+function CancelTest(props) {
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
 
@@ -26,22 +26,28 @@ function cancelTest(props) {
     }
   ]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [testToCancel, setTestToCancel] = useState(null);
+  const [hoverMessage, setHoverMessage] = useState(""); 
+  const [confirmingTestId, setConfirmingTestId] = useState(null);
 
-  const handleCancelTest = (test) => {
-    setTestToCancel(test);
-    setShowModal(true);
+  const cancelTest = () => {
+    setTests(tests.filter(test => test.id !== confirmingTestId));
+    setConfirmingTestId(null);
   };
 
-  const confirmCancelTest = () => {
-    setTests(tests.filter((test) => test.id !== testToCancel.id));
-    setShowModal(false);
+  const openConfirmationModal = (id) => {
+    setConfirmingTestId(id);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    setTestToCancel(null);
+  const closeConfirmationModal = () => {
+    setConfirmingTestId(null);
+  };
+
+  const handleHover = () => {
+    setHoverMessage("Upłynął czas na odwołanie badania"); 
+  };
+
+  const handleHoverOut = () => {
+    setHoverMessage(""); 
   };
 
   return (
@@ -66,14 +72,20 @@ function cancelTest(props) {
                   <td>{test.date}</td>
                   <td>
                     {test.date !== "2024-11-05" ? (
-                      <a
+                      <button
                         className="inputButton"
-                        onClick={() => handleCancelTest(test)}
+                        onClick={() => openConfirmationModal(test.id)}
                       >
                         Odwołaj badanie
-                      </a>
+                      </button>
                     ) : (
-                      <span className="pendingLabel">Nie można odwołać</span>
+                      <span
+                        className="pendingLabel"
+                        onMouseEnter={handleHover}
+                        onMouseLeave={handleHoverOut}
+                      >
+                        Nie można odwołać
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -84,6 +96,32 @@ function cancelTest(props) {
           <p>Brak dostępnych badań</p>
         )}
       </div>
+
+      {/* Komunikat przy najechaniu */}
+      {hoverMessage && (
+        <div className="hoverMessage">
+          <p>{hoverMessage}</p>
+        </div>
+      )}
+
+      {/* Modal potwierdzenia */}
+      {confirmingTestId && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Potwierdzenie</h2>
+            <p>Czy na pewno chcesz odwołać to badanie?</p>
+            <div className="modalButtons">
+              <button className="inputButton" onClick={cancelTest}>
+                Tak, odwołaj
+              </button>
+              <button className="inputButton" onClick={closeConfirmationModal}>
+                Nie, wróć
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="buttonContainer">
         <input
           className="inputButton"
@@ -92,26 +130,8 @@ function cancelTest(props) {
           value="Wróć do panelu głównego"
         />
       </div>
-
-      {/* Modal Confirmation */}
-      {showModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Potwierdzenie</h2>
-            <p>Czy na pewno chcesz odwołać to badanie?</p>
-            <div className="modalButtons">
-              <button className="inputButton" onClick={confirmCancelTest}>
-                Tak, odwołaj
-              </button>
-              <button className="inputButton" onClick={closeModal}>
-                Nie, wróć
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-export default cancelTest;
+export default CancelTest;
