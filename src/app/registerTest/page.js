@@ -2,11 +2,13 @@
 import './registerTest.css'
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { ref, set, getDatabase } from 'firebase/database'; // Poprawne importy dla Realtime Database
+import { auth } from "../firebase"; // Import auth z firebase.js
 
 function RegisterDoctor() {
-
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
+  
   const [tests, setTests] = useState([
     {
       id: 1,
@@ -32,6 +34,14 @@ function RegisterDoctor() {
         { date: "2024-11-25", time: "12:00", price: 150 },
       ],
     },
+    // Dodajemy jedną pozycję na stałe
+    {
+      id: 4,
+      name: "RTG klatki piersiowej",
+      availability: [
+        { date: "2024-12-01", time: "08:00", price: 100 },
+      ],
+    },
   ]);
 
   const [confirmingAppointment, setConfirmingAppointment] = useState(null);
@@ -40,26 +50,6 @@ function RegisterDoctor() {
     setConfirmingAppointment({ testId, appointment });
   }
 
-  // const confirmAppointment = () => {
-  //   const { doctorId, appointment } = confirmingAppointment;
-
-  //   // Remove the selected appointment
-  //   setDoctors((prevDoctors) =>
-  //     prevDoctors.map((doctor) =>
-  //       doctor.id === doctorId
-  //         ? {
-  //             ...doctor,
-  //             availability: doctor.availability.filter(
-  //               (a) => a.date !== appointment.date || a.time !== appointment.time
-  //             ),
-  //           }
-  //         : doctor
-  //     )
-  //   );
-
-  //   setConfirmingAppointment(null); // Zamknij modal po zapisaniu
-  // };
-
   const closeConfirmationModal = () => {
     setConfirmingAppointment(null);
   };
@@ -67,14 +57,42 @@ function RegisterDoctor() {
   function confirmAppointment() {
     const { testId, appointment } = confirmingAppointment;
 
-    setTests((prevTests) => prevTests.map((test) => test.id === testId ? {
-      ...test,
-      availability: test.availability.filter(
-        (a) => a.date !== appointment.date || a.time !== appointment.time
-      ),
+    // Get current user ID
+    const user = auth.currentUser;
+
+    if (user) {
+      // Get a reference to Realtime Database
+      const db = getDatabase(); // Pobranie instancji bazy
+      const userAppointmentsRef = ref(db, 'appointments/' + user.uid); // Referencja do użytkownika
+
+      // Save the selected test data under the user's appointments
+      set(userAppointmentsRef, {
+        testId,
+        appointmentDate: appointment.date,
+        appointmentTime: appointment.time,
+        price: appointment.price,
+        testName: tests.find(test => test.id === testId).name,
+      })
+      .then(() => {
+        setTests((prevTests) => prevTests.map((test) => 
+          test.id === testId ? {
+            ...test,
+            availability: test.availability.filter(
+              (a) => a.date !== appointment.date || a.time !== appointment.time
+            ),
+          }
+          : test
+        ));
+        setConfirmingAppointment(null); // Close confirmation modal
+        alert('Test zapisany pomyślnie!');
+      })
+      .catch((error) => {
+        console.error("Error writing to Firebase: ", error);
+        alert('Wystąpił błąd podczas zapisywania testu.');
+      });
+    } else {
+      alert('Brak zalogowanego użytkownika');
     }
-  : test));
-    setConfirmingAppointment(null);
   }
 
   return (
@@ -149,8 +167,8 @@ function RegisterDoctor() {
           className="inputButton"
           type="button"
           onClick={navigateTo('/dashboard')}
-          value="Wroć do panelu głównego"
-        ></input>
+          value="Wróć do panelu głównego"
+        />
       </div>
     </div>
   );
