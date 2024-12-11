@@ -25,7 +25,7 @@ function RegisterTest() {
     'Szczepienia': ['Grypa', 'COVID-19', 'HPV']
   };
 
-  const slots = ['09:00', '14:30', '10:00'];
+  const slots = ['09:00', '10:30', '13:00'];
 
   const handleCategoryChange = (e) => {
     const category = e.target.value;
