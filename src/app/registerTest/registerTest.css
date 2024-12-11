@@ -1,92 +1,147 @@
-.testContainer {
-  margin: 20px;
+.mainContainer {
+  font-family: Arial, sans-serif;
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  width: 900px;
-  font-size: 24px;
+  max-width: 1200px;
+  margin: auto;
 }
 
-.testContainer h2 {
+h1 {
   margin-bottom: 10px;
+  text-align: center; 
 }
 
-.availabilityTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.formWrapper {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  margin: auto;
 }
 
-.availabilityTable th,
-.availabilityTable td {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.availabilityTable th {
-  background-color: #f4f4f4;
-}
-
-.availabilityTable td {
-  text-align: center;
-}
-
-/* .inputButton {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.inputButton:hover {
-  background-color: #45a049;
-} */
-
-
-/* .mainContainer {
-  min-height: 100vh;
+.formContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; 
-  padding: 20px; 
-  box-sizing: border-box; 
-} */
+  gap: 20px;
+}
 
-.titleContainer {
-  text-align: center;
-  margin-bottom: 20px; 
+.formFields {
+  display: flex;
+  gap: 30px; 
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+  font-size: 16px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  width: 100%;
+}
+
+select:focus {
+  border-color: #4caf50; 
+  background-color: #f7f7f7;
+}
+
+option {
+  padding: 10px;
+  font-size: 16px;
+}
+
+
+select:hover {
+  background-color: #f9f9f9;
+}
+
+.calendarContainer {
+  margin-top: 20px;
+}
+
+.slot {
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.slot:hover {
+  border-color: #4caf50;
+  background-color: #f1f1f1;
+}
+
+.slot.selected {
+  border-color: #4caf50;
+  background-color: #e7f9e7;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.submitButton {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  padding: 15px 30px;
+  border-radius: 5px;
+  border: none;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+  margin-top: 20px; 
+}
+
+.submitButton:hover {
+  background-color: #45a049;
+}
+
+.submitButton.disabled {
+  background-color: grey;
+  cursor: not-allowed;
 }
 
 .modalOverlay {
-  position: fixed; /* Modal przykrywa cały ekran */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Modal jest na najwyższym poziomie */
 }
 
 .modalContent {
   background: white;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 8px;
   text-align: center;
-  z-index: 1010; /* Treść modala wyżej niż overlay */
 }
 
 .modalButtons {
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
+}
+
+.inputButton {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.inputButton:hover {
+  background-color: #45a049;
 }

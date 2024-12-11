@@ -1,159 +1,148 @@
-'use client'
-import './registerTest.css'
+'use client';
+import React, { useState } from 'react';
+import './registerTest.css';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
-function RegisterDoctor() {
-
+function RegisterTest() {
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
-  const [tests, setTests] = useState([
-    {
-      id: 1,
-      name: "Badanie krwi",
-      availability: [
-        { date: "2024-11-21", time: "09:00", price: 12 },
-        { date: "2024-11-21", time: "14:00", price: 12 },
-      ],
-    },
-    {
-      id: 2,
-      name: "Badanie moczu",
-      availability: [
-        { date: "2024-11-22", time: "10:00", price: 10 },
-        { date: "2024-11-23", time: "15:30", price: 10 },
-      ],
-    },
-    {
-      id: 3,
-      name: "USG jamy brzusznej",
-      availability: [
-        { date: "2024-11-25", time: "08:30", price: 150 },
-        { date: "2024-11-25", time: "12:00", price: 150 },
-      ],
-    },
-  ]);
 
-  const [confirmingAppointment, setConfirmingAppointment] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedTest, setSelectedTest] = useState('');
+  const [availableTests, setAvailableTests] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [confirming, setConfirming] = useState(false);
 
-  function handleRegister(testId, appointment) {
-    setConfirmingAppointment({ testId, appointment });
-  }
-
-  // const confirmAppointment = () => {
-  //   const { doctorId, appointment } = confirmingAppointment;
-
-  //   // Remove the selected appointment
-  //   setDoctors((prevDoctors) =>
-  //     prevDoctors.map((doctor) =>
-  //       doctor.id === doctorId
-  //         ? {
-  //             ...doctor,
-  //             availability: doctor.availability.filter(
-  //               (a) => a.date !== appointment.date || a.time !== appointment.time
-  //             ),
-  //           }
-  //         : doctor
-  //     )
-  //   );
-
-  //   setConfirmingAppointment(null); // Zamknij modal po zapisaniu
-  // };
-
-  const closeConfirmationModal = () => {
-    setConfirmingAppointment(null);
+  const categories = {
+    'Badania laboratoryjne': ['Morfologia', 'Glukoza', 'Cholesterol', 'Elektrolity'],
+    'Diagnostyka obrazowa': ['USG jamy brzusznej', 'RTG płuc', 'MRI'],
+    'Badania funkcjonalne': ['EKG', 'Spirometria', 'Holter EKG'],
+    'Endoskopia': ['Gastroskopia', 'Kolonoskopia'],
+    'Profilaktyczne i przesiewowe': ['Cytologia', 'Mammografia', 'Badanie przesiewowe cukrzycy'],
+    'Szczepienia': ['Grypa', 'COVID-19', 'HPV']
   };
 
-  function confirmAppointment() {
-    const { testId, appointment } = confirmingAppointment;
+  const slots = [
+    { date: '2024-11-21', time: '09:00' },
+    { date: '2024-11-22', time: '14:30' },
+    { date: '2024-11-23', time: '10:00' },
+  ];
 
-    setTests((prevTests) => prevTests.map((test) => test.id === testId ? {
-      ...test,
-      availability: test.availability.filter(
-        (a) => a.date !== appointment.date || a.time !== appointment.time
-      ),
-    }
-  : test));
-    setConfirmingAppointment(null);
-  }
+  const handleCategoryChange = (e) => {
+    const category = e.target.value;
+    setSelectedCategory(category);
+    setAvailableTests(categories[category] || []);
+    setSelectedTest('');
+    setSelectedSlot(null);
+  };
+
+  const handleTestChange = (e) => {
+    setSelectedTest(e.target.value);
+    setSelectedSlot(null);
+  };
+
+  const isSubmitDisabled = !(selectedCategory && selectedTest && selectedSlot);
+
+  const handleSubmit = () => {
+    setConfirming(true); 
+  };
+
+  const confirmSubmit = () => {
+    setConfirming(false); 
+    alert(`Zapisano na badanie ${selectedTest} dnia ${selectedSlot.date} o godz. ${selectedSlot.time}.`);
+  };
+
+  const handleSlotClick = (slot) => {
+    setSelectedSlot(slot);
+  };
 
   return (
     <div className="mainContainer">
-      <div className="titleContainer">
-        <h1>Zapisz się na badanie</h1>
-      </div>
-      <div className="content">
-        {tests.map((test) => (
-          <div key={test.id} className="testContainer">
-            <h2>{test.name}</h2>
-            <table className="availabilityTable">
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Godzina</th>
-                  <th>Cena bez NFZ</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {test.availability.map((appointment, index) => (
-                  <tr key={index}>
-                    <td>{appointment.date}</td>
-                    <td>{appointment.time}</td>
-                    <td>{appointment.price}</td>
-                    <td>
-                      <button
-                        className="inputButton"
-                        onClick={() => handleRegister(test.id, appointment)}
-                      >
-                        Zapisz się
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {test.availability.length === 0 && (
-                  <tr>
-                    <td colSpan="4">Brak dostępnych terminów</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        ))}
-      </div>
+      <h1>Zapisz się na badanie</h1>
 
-      {/* Modal potwierdzenia */}
-      {confirmingAppointment && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Potwierdzenie</h2>
-            <p>
-              Czy na pewno chcesz zapisać się na wizytę dnia{" "}
-              {confirmingAppointment.appointment.date} o godzinie{" "}
-              {confirmingAppointment.appointment.time}?
-            </p>
-            <div className="modalButtons">
-              <button className="inputButton" onClick={confirmAppointment}>
-                Tak, zapisz
-              </button>
-              <button className="inputButton" onClick={closeConfirmationModal}>
-                Nie, wróć
-              </button>
-            </div>
+      {/* Formularz i przycisk "Zapisz się" umieszczony wewnątrz formWrapper */}
+      <div className="formWrapper">
+        <div className="formContainer">
+          <div className="formFields">
+            <label>
+              Wybierz kategorię badania:
+              <select value={selectedCategory} onChange={handleCategoryChange}>
+                <option value="">-- Wybierz --</option>
+                {Object.keys(categories).map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </label>
+
+            {availableTests.length > 0 && (
+              <label>
+                Wybierz rodzaj badania:
+                <select value={selectedTest} onChange={handleTestChange}>
+                  <option value="">-- Wybierz --</option>
+                  {availableTests.map((test) => (
+                    <option key={test} value={test}>{test}</option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
+
+          {selectedTest && (
+            <div className="calendarContainer">
+              <h3>Dostępne terminy:</h3>
+              {slots.map((slot, index) => (
+                <div
+                  key={index}
+                  className={`slot ${selectedSlot && selectedSlot.date === slot.date && selectedSlot.time === slot.time ? 'selected' : ''}`}
+                  onClick={() => handleSlotClick(slot)}
+                >
+                  {slot.date} - {slot.time}
+              </div>
+          ))}
+
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Wyśrodkowany przycisk "Zapisz się" na dole */}
+        <button
+          className={`submitButton ${isSubmitDisabled ? 'disabled' : 'enabled'}`}
+          disabled={isSubmitDisabled}
+          onClick={handleSubmit}
+        >
+          Zapisz się
+        </button>
+      </div>
 
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
           onClick={navigateTo('/dashboard')}
-          value="Wroć do panelu głównego"
-        ></input>
+          value="Wróć do panelu głównego"
+        />
       </div>
+
+      {confirming && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Potwierdzenie terminu</h2>
+            <p>
+              Czy na pewno chcesz zapisać się na badanie <strong>{selectedTest}</strong> dnia <strong>{selectedSlot.date}</strong> o godzinie <strong>{selectedSlot.time}</strong>?
+            </p>
+            <div className="modalButtons">
+              <button className="inputButton" onClick={confirmSubmit}>
+                Tak, potwierdź
+              </button>
+              <button className="inputButton" onClick={() => setConfirming(false)}>
+                Nie, wróć
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default RegisterDoctor;
+export default RegisterTest;
