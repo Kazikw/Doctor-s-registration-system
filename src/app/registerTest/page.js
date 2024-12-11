@@ -1,5 +1,7 @@
-'use client';
+"use client";
 import React, { useState } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import './registerTest.css';
 import { useRouter } from 'next/navigation';
 
@@ -10,7 +12,8 @@ function RegisterTest() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTest, setSelectedTest] = useState('');
   const [availableTests, setAvailableTests] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState('');
   const [confirming, setConfirming] = useState(false);
 
   const categories = {
@@ -22,45 +25,43 @@ function RegisterTest() {
     'Szczepienia': ['Grypa', 'COVID-19', 'HPV']
   };
 
-  const slots = [
-    { date: '2024-11-21', time: '09:00' },
-    { date: '2024-11-22', time: '14:30' },
-    { date: '2024-11-23', time: '10:00' },
-  ];
+  const slots = ['09:00', '14:30', '10:00'];
 
   const handleCategoryChange = (e) => {
     const category = e.target.value;
     setSelectedCategory(category);
     setAvailableTests(categories[category] || []);
     setSelectedTest('');
-    setSelectedSlot(null);
+    setSelectedDate(null);
+    setSelectedSlot('');
   };
 
   const handleTestChange = (e) => {
     setSelectedTest(e.target.value);
-    setSelectedSlot(null);
+    setSelectedDate(null);
+    setSelectedSlot('');
   };
 
-  const isSubmitDisabled = !(selectedCategory && selectedTest && selectedSlot);
+  const isSubmitDisabled = !(selectedCategory && selectedTest && selectedDate && selectedSlot);
 
   const handleSubmit = () => {
-    setConfirming(true); 
+    setConfirming(true);
   };
 
   const confirmSubmit = () => {
-    setConfirming(false); 
-    alert(`Zapisano na badanie ${selectedTest} dnia ${selectedSlot.date} o godz. ${selectedSlot.time}.`);
+    setConfirming(false);
+    alert(`Zapisano na badanie ${selectedTest} dnia ${selectedDate.toLocaleDateString()} o godz. ${selectedSlot}.`);
   };
 
-  const handleSlotClick = (slot) => {
-    setSelectedSlot(slot);
+  // Disable weekends
+  const tileDisabled = ({ date }) => {
+    const day = date.getDay();
+    return day === 0 || day === 6; // Disable Sundays (0) and Saturdays (6)
   };
 
   return (
     <div className="mainContainer">
       <h1>Zapisz się na badanie</h1>
-
-      {/* Formularz i przycisk "Zapisz się" umieszczony wewnątrz formWrapper */}
       <div className="formWrapper">
         <div className="formContainer">
           <div className="formFields">
@@ -88,30 +89,44 @@ function RegisterTest() {
           </div>
 
           {selectedTest && (
-            <div className="calendarContainer">
-              <h3>Dostępne terminy:</h3>
-              {slots.map((slot, index) => (
-                <div
-                  key={index}
-                  className={`slot ${selectedSlot && selectedSlot.date === slot.date && selectedSlot.time === slot.time ? 'selected' : ''}`}
-                  onClick={() => handleSlotClick(slot)}
-                >
-                  {slot.date} - {slot.time}
+            <>
+              <div className="calendarContainer">
+                <h3>Wybierz datę:</h3>
+                <Calendar
+                  onChange={setSelectedDate}
+                  value={selectedDate}
+                  minDate={new Date()}
+                  tileDisabled={tileDisabled}
+                />
               </div>
-          ))}
 
-            </div>
+              {selectedDate && (
+                <div className="slotContainer">
+                  <h3>Wybierz godzinę:</h3>
+                  {slots.map((slot, index) => (
+                    <div
+                      key={index}
+                      className={`slot ${selectedSlot === slot ? 'selected' : ''}`}
+                      onClick={() => setSelectedSlot(slot)}
+                    >
+                      {slot}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 
-        {/* Wyśrodkowany przycisk "Zapisz się" na dole */}
-        <button
-          className={`submitButton ${isSubmitDisabled ? 'disabled' : 'enabled'}`}
-          disabled={isSubmitDisabled}
-          onClick={handleSubmit}
-        >
-          Zapisz się
-        </button>
+        {selectedDate && (
+          <button
+            className={`submitButton ${isSubmitDisabled ? 'disabled' : 'enabled'}`}
+            disabled={isSubmitDisabled}
+            onClick={handleSubmit}
+          >
+            Zapisz się
+          </button>
+        )}
       </div>
 
       <div className="buttonContainer">
@@ -128,7 +143,7 @@ function RegisterTest() {
           <div className="modalContent">
             <h2>Potwierdzenie terminu</h2>
             <p>
-              Czy na pewno chcesz zapisać się na badanie <strong>{selectedTest}</strong> dnia <strong>{selectedSlot.date}</strong> o godzinie <strong>{selectedSlot.time}</strong>?
+              Czy na pewno chcesz zapisać się na badanie <strong>{selectedTest}</strong> dnia <strong>{selectedDate.toLocaleDateString()}</strong> o godzinie <strong>{selectedSlot}</strong>?
             </p>
             <div className="modalButtons">
               <button className="inputButton" onClick={confirmSubmit}>
