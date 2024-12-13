@@ -154,28 +154,27 @@ function RegisterTest() {
                 </div>
 
                 {hasReferral && (
-                  <label>
-                    Wprowadź 4-cyfrowy kod skierowania:
-                    <div className="referralInputContainer">
-                      <input
-                        type="text"
-                        value={referralCode}
-                        onChange={handleReferralCodeChange}
-                        maxLength="4"
-                        className={`referralCodeInput ${
-                          isReferralCodeValid ? 'valid' : referralCode.length > 0 ? 'error' : ''
-                        }`}
-                      />
-                      {!isReferralCodeValid && referralCode.length > 0 && (
-                        <p className="errorText">Nieprawidłowy kod skierowania!</p>
-                      )}
-                      {isReferralCodeValid && (
-                        <p className="successText">✓ Kod poprawny!</p>
-                      )}
-                    </div>
-                  </label>
-                )}
-              </div>
+                <div className="referralInputContainer">
+                  <input
+                    type="text"
+                    value={referralCode}
+                    onChange={handleReferralCodeChange}
+                    maxLength="4"
+                    placeholder="Wprowadź 4-cyfrowy kod skierowania"
+                    className={`referralCodeInput ${
+                      isReferralCodeValid ? 'valid' : referralCode.length > 0 ? 'error' : ''
+                    }`}
+                  />
+                  {!isReferralCodeValid && referralCode.length > 0 && (
+                    <p className="referralCodeMessage error">Nieprawidłowy kod skierowania!</p>
+                  )}
+                  {isReferralCodeValid && (
+                    <p className="referralCodeMessage valid">✓ Kod poprawny!</p>
+                  )}
+                </div>
+              )}
+            </div>
+          
 
               {(hasReferral === false || (hasReferral && isReferralCodeValid)) && (
                 <div className="calendarContainer">

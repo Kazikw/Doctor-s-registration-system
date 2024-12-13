@@ -97,7 +97,7 @@ function RegisterDoctor() {
 
   const tileDisabled = ({ date }) => {
     const day = date.getDay();
-    return day === 0 || day === 6; // Disable weekends
+    return day === 0 || day === 6; 
   };
 
   const showCalendar =
@@ -167,7 +167,7 @@ function RegisterDoctor() {
                     value={referralCode}
                     onChange={handleReferralCodeChange}
                     maxLength="4"
-                    placeholder="Wprowadź kod skierowania"
+                    placeholder="Wprowadź 4-cyfrowy kod skierowania"
                     className={`referralCodeInput ${
                       isReferralCodeValid ? 'valid' : referralCode.length > 0 ? 'error' : ''
                     }`}
