@@ -17,7 +17,7 @@ function RegisterTest() {
   const [confirming, setConfirming] = useState(false);
   const [hasReferral, setHasReferral] = useState(null);
   const [referralCode, setReferralCode] = useState('');
-  const [confirmationDetails, setConfirmationDetails] = useState(null); // Nowy stan na szczegóły potwierdzenia
+  const [confirmationDetails, setConfirmationDetails] = useState(null);
 
   const categories = {
     'Badania laboratoryjne': ['Morfologia', 'Glukoza', 'Cholesterol', 'Elektrolity'],
@@ -78,22 +78,21 @@ function RegisterTest() {
       date: selectedDate.toLocaleDateString(),
       slot: selectedSlot,
     });
-    setConfirming(false); // Zamknięcie modala potwierdzenia
+    setConfirming(false);
   };
 
   const closeConfirmationModal = () => {
-    setConfirmationDetails(null); // Czyszczenie szczegółów potwierdzenia
-    clearFields(); // Czyszczenie formularza po kliknięciu "OK"
+    setConfirmationDetails(null);
+    clearFields();
   };
 
   const isSubmitDisabled =
     !(selectedCategory && selectedTest && selectedDate && selectedSlot) ||
     (hasReferral && !isReferralCodeValid);
 
-  // Disable weekends
   const tileDisabled = ({ date }) => {
     const day = date.getDay();
-    return day === 0 || day === 6; // Disable Sundays (0) and Saturdays (6)
+    return day === 0 || day === 6;
   };
 
   return (
@@ -154,24 +153,31 @@ function RegisterTest() {
                   </label>
                 </div>
 
-                {hasReferral !== null && hasReferral && (
+                {hasReferral && (
                   <label>
                     Wprowadź 4-cyfrowy kod skierowania:
-                    <input
-                      type="text"
-                      value={referralCode}
-                      onChange={handleReferralCodeChange}
-                      maxLength="4"
-                      className={isReferralCodeValid ? '' : 'error'}
-                    />
-                    {!isReferralCodeValid && referralCode.length > 0 && (
-                      <p className="errorText">Nieprawidłowy kod skierowania!</p>
-                    )}
+                    <div className="referralInputContainer">
+                      <input
+                        type="text"
+                        value={referralCode}
+                        onChange={handleReferralCodeChange}
+                        maxLength="4"
+                        className={`referralCodeInput ${
+                          isReferralCodeValid ? 'valid' : referralCode.length > 0 ? 'error' : ''
+                        }`}
+                      />
+                      {!isReferralCodeValid && referralCode.length > 0 && (
+                        <p className="errorText">Nieprawidłowy kod skierowania!</p>
+                      )}
+                      {isReferralCodeValid && (
+                        <p className="successText">✓ Kod poprawny!</p>
+                      )}
+                    </div>
                   </label>
                 )}
               </div>
 
-              {hasReferral !== null && (
+              {(hasReferral === false || (hasReferral && isReferralCodeValid)) && (
                 <div className="calendarContainer">
                   <h3>Wybierz datę:</h3>
                   <Calendar

@@ -7,7 +7,7 @@
 
 h1 {
   margin-bottom: 10px;
-  text-align: center; 
+  text-align: center;
 }
 
 .formWrapper {
@@ -27,7 +27,7 @@ h1 {
 
 .formFields {
   display: flex;
-  gap: 30px; 
+  gap: 30px;
 }
 
 label {
@@ -48,7 +48,7 @@ select {
 }
 
 select:focus {
-  border-color: #4caf50; 
+  border-color: #4caf50;
   background-color: #f7f7f7;
 }
 
@@ -56,7 +56,6 @@ option {
   padding: 10px;
   font-size: 16px;
 }
-
 
 select:hover {
   background-color: #f9f9f9;
@@ -95,7 +94,7 @@ select:hover {
   border: none;
   font-size: 18px;
   transition: background-color 0.3s ease;
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 
 .submitButton:hover {
@@ -145,6 +144,7 @@ select:hover {
 .inputButton:hover {
   background-color: #45a049;
 }
+
 .calendarContainer {
   margin-top: 20px;
 }
@@ -178,7 +178,6 @@ select:hover {
   align-items: center;
 }
 
-
 .referralInputContainer {
   margin-top: 15px;
 }
@@ -191,12 +190,16 @@ input[type="text"] {
   width: 100%;
 }
 
-input.inputError {
-  border-color: red;
-}
 
-.errorText {
-  color: red;
+.referralCodeMessage {
   font-size: 14px;
   margin-top: 5px;
+}
+
+.referralCodeMessage.valid {
+  color: green;
+}
+
+.referralCodeMessage.error {
+  color: red;
 }
