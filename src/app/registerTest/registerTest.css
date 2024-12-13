@@ -165,3 +165,38 @@ select:hover {
   justify-content: center;
 }
 
+.referralContainer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.referralOptions {
+  display: inline-flex;
+  gap: 20px;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.referralInputContainer {
+  margin-top: 15px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+}
+
+input.inputError {
+  border-color: red;
+}
+
+.errorText {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
