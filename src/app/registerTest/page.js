@@ -4,6 +4,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './registerTest.css';
 import { useRouter } from 'next/navigation';
+import { ref, set, getDatabase } from 'firebase/database'; // Poprawne importy dla Realtime Database
+import { auth } from "../firebase"; // Import auth z firebase.js
 
 function RegisterTest() {
   const router = useRouter();
@@ -72,14 +74,6 @@ function RegisterTest() {
     setReferralCode('');
   };
 
-  const confirmSubmit = () => {
-    setConfirmationDetails({
-      test: selectedTest,
-      date: selectedDate.toLocaleDateString(),
-      slot: selectedSlot,
-    });
-    setConfirming(false);
-  };
 
   const closeConfirmationModal = () => {
     setConfirmationDetails(null);
@@ -94,6 +88,48 @@ function RegisterTest() {
     const day = date.getDay();
     return day === 0 || day === 6;
   };
+
+  function confirmAppointment() {
+    const { testId, appointment } = confirmingAppointment;
+
+  
+    const user = auth.currentUser;
+
+    if (user) {
+    
+      const db = getDatabase(); // Pobranie instancji bazy
+      const userAppointmentsRef = ref(db, 'appointments/' + user.uid); // Referencja do użytkownika
+
+      set(userAppointmentsRef, {
+        testId,
+        appointmentDate: appointment.date,
+        appointmentTime: appointment.time,
+        price: appointment.price,
+        testName: tests.find(test => test.id === testId).name,
+      })
+      .then(() => {
+        setTests((prevTests) => prevTests.map((test) => 
+          test.id === testId ? {
+            ...test,
+            availability: test.availability.filter(
+              (a) => a.date !== appointment.date || a.time !== appointment.time
+            ),
+          }
+          : test
+        ));
+        setConfirmingAppointment(null);
+        alert('Test zapisany pomyślnie!');
+      })
+      .catch((error) => {
+        console.error("Error writing to Firebase: ", error);
+        alert('Wystąpił błąd podczas zapisywania testu.');
+      });
+    } else {
+      alert('Brak zalogowanego użytkownika');
+    }
+  }
+
+
 
   return (
     <div className="mainContainer">
@@ -229,17 +265,17 @@ function RegisterTest() {
       {confirming && (
         <div className="modalOverlay">
           <div className="modalContent">
-            <h2>Potwierdzenie terminu</h2>
+            <h2>Potwierdzenie</h2>
             <p>
-              Czy na pewno chcesz zapisać się na badanie <strong>{selectedTest}</strong> dnia{' '}
-              <strong>{selectedDate.toLocaleDateString()}</strong> o godzinie{' '}
-              <strong>{selectedSlot}</strong>?
+              Czy na pewno chcesz zapisać się na wizytę dnia{" "}
+              {confirmingAppointment.appointment.date} o godzinie{" "}
+              {confirmingAppointment.appointment.time}?
             </p>
             <div className="modalButtons">
-              <button className="inputButton" onClick={confirmSubmit}>
-                Tak, potwierdź
+              <button className="inputButton" onClick={confirmAppointment}>
+                Tak, zapisz
               </button>
-              <button className="inputButton" onClick={() => setConfirming(false)}>
+              <button className="inputButton" onClick={closeConfirmationModal}>
                 Nie, wróć
               </button>
             </div>
