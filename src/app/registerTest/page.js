@@ -16,7 +16,7 @@ function RegisterTest() {
   const [availableTests, setAvailableTests] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState('');
-  const [confirming, setConfirming] = useState(false);
+  const [confirmingAppointment, setConfirmingAppointment] = useState(null);
   const [hasReferral, setHasReferral] = useState(null);
   const [referralCode, setReferralCode] = useState('');
   const [confirmationDetails, setConfirmationDetails] = useState(null);
@@ -69,11 +69,10 @@ function RegisterTest() {
     setAvailableTests([]);
     setSelectedDate(null);
     setSelectedSlot('');
-    setConfirming(false);
+    setConfirmingAppointment(null);
     setHasReferral(null);
     setReferralCode('');
   };
-
 
   const closeConfirmationModal = () => {
     setConfirmationDetails(null);
@@ -90,46 +89,31 @@ function RegisterTest() {
   };
 
   function confirmAppointment() {
-    const { testId, appointment } = confirmingAppointment;
-
-  
     const user = auth.currentUser;
 
-    if (user) {
-    
-      const db = getDatabase(); // Pobranie instancji bazy
-      const userAppointmentsRef = ref(db, 'appointments/' + user.uid); // Referencja do użytkownika
+    if (user && confirmingAppointment) {
+      const { testId, appointment } = confirmingAppointment;
+      const db = getDatabase();
+      const userAppointmentsRef = ref(db, 'appointments/' + user.uid);
 
       set(userAppointmentsRef, {
         testId,
         appointmentDate: appointment.date,
         appointmentTime: appointment.time,
-        price: appointment.price,
-        testName: tests.find(test => test.id === testId).name,
+        testName: selectedTest,
       })
-      .then(() => {
-        setTests((prevTests) => prevTests.map((test) => 
-          test.id === testId ? {
-            ...test,
-            availability: test.availability.filter(
-              (a) => a.date !== appointment.date || a.time !== appointment.time
-            ),
-          }
-          : test
-        ));
-        setConfirmingAppointment(null);
-        alert('Test zapisany pomyślnie!');
-      })
-      .catch((error) => {
-        console.error("Error writing to Firebase: ", error);
-        alert('Wystąpił błąd podczas zapisywania testu.');
-      });
+        .then(() => {
+          alert('Test zapisany pomyślnie!');
+          clearFields();
+        })
+        .catch((error) => {
+          console.error("Error writing to Firebase: ", error);
+          alert('Wystąpił błąd podczas zapisywania testu.');
+        });
     } else {
-      alert('Brak zalogowanego użytkownika');
+      alert('Brak zalogowanego użytkownika lub danych do zapisania.');
     }
   }
-
-
 
   return (
     <div className="mainContainer">
@@ -190,27 +174,26 @@ function RegisterTest() {
                 </div>
 
                 {hasReferral && (
-                <div className="referralInputContainer">
-                  <input
-                    type="text"
-                    value={referralCode}
-                    onChange={handleReferralCodeChange}
-                    maxLength="4"
-                    placeholder="Wprowadź 4-cyfrowy kod skierowania"
-                    className={`referralCodeInput ${
-                      isReferralCodeValid ? 'valid' : referralCode.length > 0 ? 'error' : ''
-                    }`}
-                  />
-                  {!isReferralCodeValid && referralCode.length > 0 && (
-                    <p className="referralCodeMessage error">Nieprawidłowy kod skierowania!</p>
-                  )}
-                  {isReferralCodeValid && (
-                    <p className="referralCodeMessage valid">✓ Kod poprawny!</p>
-                  )}
-                </div>
-              )}
-            </div>
-          
+                  <div className="referralInputContainer">
+                    <input
+                      type="text"
+                      value={referralCode}
+                      onChange={handleReferralCodeChange}
+                      maxLength="4"
+                      placeholder="Wprowadź 4-cyfrowy kod skierowania"
+                      className={`referralCodeInput ${
+                        isReferralCodeValid ? 'valid' : referralCode.length > 0 ? 'error' : ''
+                      }`}
+                    />
+                    {!isReferralCodeValid && referralCode.length > 0 && (
+                      <p className="referralCodeMessage error">Nieprawidłowy kod skierowania!</p>
+                    )}
+                    {isReferralCodeValid && (
+                      <p className="referralCodeMessage valid">✓ Kod poprawny!</p>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {(hasReferral === false || (hasReferral && isReferralCodeValid)) && (
                 <div className="calendarContainer">
@@ -246,7 +229,13 @@ function RegisterTest() {
           <button
             className={`submitButton ${isSubmitDisabled ? 'disabled' : 'enabled'}`}
             disabled={isSubmitDisabled}
-            onClick={() => setConfirming(true)}
+            onClick={() => setConfirmingAppointment({
+              testId: selectedTest,
+              appointment: {
+                date: selectedDate.toLocaleDateString(),
+                time: selectedSlot,
+              },
+            })}
           >
             Zapisz się
           </button>
@@ -262,14 +251,12 @@ function RegisterTest() {
         />
       </div>
 
-      {confirming && (
+      {confirmingAppointment && (
         <div className="modalOverlay">
           <div className="modalContent">
             <h2>Potwierdzenie</h2>
             <p>
-              Czy na pewno chcesz zapisać się na wizytę dnia{" "}
-              {confirmingAppointment.appointment.date} o godzinie{" "}
-              {confirmingAppointment.appointment.time}?
+              Czy na pewno chcesz zapisać się na wizytę dnia {confirmingAppointment.appointment.date} o godzinie {confirmingAppointment.appointment.time}?
             </p>
             <div className="modalButtons">
               <button className="inputButton" onClick={confirmAppointment}>
