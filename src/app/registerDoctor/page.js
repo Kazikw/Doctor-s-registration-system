@@ -261,8 +261,11 @@ function RegisterDoctor() {
               <strong>{confirmationDetails.date}</strong> o godzinie <strong>{confirmationDetails.slot}</strong>.
             </p>
             <div className="modalButtons">
+              <button className="inputButton" onClick={() => router.push('/dashboard')}>
+                Wróć do panelu głównego
+              </button>
               <button className="inputButton" onClick={closeConfirmationModal}>
-                OK
+                Zapisz na kolejną wizytę
               </button>
             </div>
           </div>
