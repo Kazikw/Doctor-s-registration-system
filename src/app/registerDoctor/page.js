@@ -20,24 +20,41 @@ function RegisterDoctor() {
 
   const specializations = {
     "Lekarz rodzinny": ["Bartosz Kaszelek", "Katarzyna Śmigło", "Andrzej Tabletka", "Danuta Moneta"],
-     "Pediatra": ["Damian Latarka", "Diana Deszczyk", "Marek Obrzęk", "Tamara Zdrówko"],
-     "Ginekolog": ["Rafał Naleśnik", "Maria Wiosenka"],
-     "Dermatolog": ["Lidia Kołderka", "Stanisław Oscypek"],
-     "Kardiolog": ["Ksawery Kiełbasa", "Karolina Serducho"],
-     "Ortopeda": ["Filip Kuternoga", "Cyprian Żeberko"],
-     "Laryngolog": ["Dawid Bębenek", "Danuta Piskliwiec"],
-     "Okulista": ["Olga Mętlik", "Wiesław Szkiełko"],
-     "Neurolog": ["Marcin Samolot", "Alina Światowiec"],
-     "Endokrynolog": ["Eryk Trofeum", "Beata Płanetnik"],
-     "Reumatolog": ["Wiesław Kolano", "Bogusław Poganiacz"],
-     "Psychiatra": ["Borys Wariat", "Teodozja Drapichrust"],
-     "Chirurg": ["Tomasz Świeżak", "Eleonora Miał"],
-     "Urolog": ["Janina Obraz", "Jan Krzesiwo"],
-     "Dentysta": ["Aleksander Parzygęba", "Irena Ząbek"],
-   };
- 
+    "Pediatra": ["Damian Latarka", "Diana Deszczyk", "Marek Obrzęk", "Tamara Zdrówko"],
+    "Ginekolog": ["Rafał Naleśnik", "Maria Wiosenka"],
+    "Dermatolog": ["Lidia Kołderka", "Stanisław Oscypek"],
+    "Kardiolog": ["Ksawery Kiełbasa", "Karolina Serducho"],
+    "Ortopeda": ["Filip Kuternoga", "Cyprian Żeberko"],
+    "Laryngolog": ["Dawid Bębenek", "Danuta Piskliwiec"],
+    "Okulista": ["Olga Mętlik", "Wiesław Szkiełko"],
+    "Neurolog": ["Marcin Samolot", "Alina Światowiec"],
+    "Endokrynolog": ["Eryk Trofeum", "Beata Płanetnik"],
+    "Reumatolog": ["Wiesław Kolano", "Bogusław Poganiacz"],
+    "Psychiatra": ["Borys Wariat", "Teodozja Drapichrust"],
+    "Chirurg": ["Tomasz Świeżak", "Eleonora Miał"],
+    "Urolog": ["Janina Obraz", "Jan Krzesiwo"],
+    "Dentysta": ["Aleksander Parzygęba", "Irena Ząbek"],
+  };
 
   const slots = ['09:00', '10:30', '13:00', '15:00'];
+
+  const prices = {
+    "Lekarz rodzinny": 100,
+    "Pediatra": 120,
+    "Ginekolog": 150,
+    "Dermatolog": 130,
+    "Kardiolog": 200,
+    "Ortopeda": 180,
+    "Laryngolog": 110,
+    "Okulista": 140,
+    "Neurolog": 170,
+    "Endokrynolog": 160,
+    "Reumatolog": 140,
+    "Psychiatra": 220,
+    "Chirurg": 250,
+    "Urolog": 180,
+    "Dentysta": 90,
+  };
 
   const handleSpecializationChange = (e) => {
     const specialization = e.target.value;
@@ -138,7 +155,7 @@ function RegisterDoctor() {
 
           {selectedDoctor && (
             <div className="referralContainer">
-              <h3>Czy posiadasz skierowanie na badanie?</h3>
+              <h3>Czy posiadasz skierowanie na wizytę?</h3>
               <div className="referralOptions">
                 <label>
                   <input
@@ -159,6 +176,19 @@ function RegisterDoctor() {
                   Nie
                 </label>
               </div>
+
+              {hasReferral === false && selectedSpecialization && (
+                <div className="testPriceContainer">
+                  <div className="testPriceNotice">
+                    <h3>Cena wizyty:</h3>
+                    <p>
+                      <strong>{prices[selectedSpecialization]} PLN</strong>
+                    </p>
+                    <p>Pamiętaj, że za wizytę należy zapłacić.</p>
+                  </div>
+                </div>
+                )}
+
 
               {hasReferral && (
                 <div className="referralInputContainer">

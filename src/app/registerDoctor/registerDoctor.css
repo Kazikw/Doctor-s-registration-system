@@ -203,3 +203,13 @@ input[type="text"] {
 .referralCodeMessage.error {
   color: red;
 }
+
+.testPriceNotice {
+  color: #d9534f; 
+  font-weight: bold; 
+  background-color: #f9f2f4; 
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  border: 1px solid #d9534f;
+}

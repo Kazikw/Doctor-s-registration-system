@@ -4,8 +4,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './registerTest.css';
 import { useRouter } from 'next/navigation';
-import { ref, set, getDatabase } from 'firebase/database'; // Poprawne importy dla Realtime Database
-import { auth } from "../firebase"; // Import auth z firebase.js
+import { ref, set, getDatabase } from 'firebase/database'; 
+import { auth } from "../firebase"; 
 
 function RegisterTest() {
   const router = useRouter();
@@ -31,6 +31,27 @@ function RegisterTest() {
   };
 
   const slots = ['09:00', '10:30', '13:00'];
+
+  const testPrices = {
+    'Morfologia': 50,
+    'Glukoza': 40,
+    'Cholesterol': 45,
+    'Elektrolity': 60,
+    'USG jamy brzusznej': 150,
+    'RTG płuc': 100,
+    'MRI': 350,
+    'EKG': 80,
+    'Spirometria': 120,
+    'Holter EKG': 200,
+    'Gastroskopia': 300,
+    'Kolonoskopia': 400,
+    'Cytologia': 80,
+    'Mammografia': 120,
+    'Badanie przesiewowe cukrzycy': 60,
+    'Grypa': 40,
+    'COVID-19': 50,
+    'HPV': 150
+  };
 
   const handleCategoryChange = (e) => {
     const category = e.target.value;
@@ -176,7 +197,17 @@ function RegisterTest() {
                     Nie
                   </label>
                 </div>
-
+                {hasReferral === false && selectedTest && (
+                  <div className="testPriceContainer">
+                    <div className="testPriceNotice">
+                      <h3>Cena badania:</h3>
+                      <p>
+                        <strong>{testPrices[selectedTest]} PLN</strong>
+                      </p>
+                      <p>Pamiętaj, że za badanie należy zapłacić.</p>
+                    </div>
+                  </div>
+                  )}
                 {hasReferral && (
                   <div className="referralInputContainer">
                     <input
