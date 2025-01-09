@@ -4,22 +4,22 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import styles from "./Dashboard.module.css";
 
 function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  
+
   const navigateTo = (path) => () => router.push(path);
 
   useEffect(() => {
     const user = auth.currentUser;
-    
+
     if (!user) {
       router.push("/login");
       return;
     }
-
 
     const getUserData = async () => {
       const docRef = doc(db, "users", user.uid);
@@ -36,76 +36,39 @@ function Dashboard() {
     getUserData();
   }, [router]);
 
-
-
   return (
-    <div className="mainContainer">
-      <div className="titleContainer">
-        <h1>HankMed</h1>
-      </div>
-      <div className="header">
-        <h3>Jesteś zalogowany jako: {userData?.name || "Użytkownik"} {userData?.surname || "Testowy"}</h3>
-      </div>
-      <br />
-      <div className="welcome-section">
-        <p>Witaj w systemie zarządzania Twoimi wizytami i badaniami HankMed!</p>
-      </div>
-      <br />
-      <div className="nav">
-        <div className="buttonContainer">
-          <input
-            className="inputButton"
-            type="button"
-            onClick={navigateTo('/testResults')}
-            value="Odbierz wyniki badań"
-          />
+    <div className={styles.dashboard}>
+      {/* Header Section */}
+      <header className={styles.header}>
+        <div className={styles.logo}>HankMed</div>
+        <nav className={styles.navbar}>
+          <div className={styles.menuItem} onClick={navigateTo('/testResults')}>Odbierz wyniki badań</div>
+          <div className={`${styles.menuItem} ${styles.dropdown}`}>
+            Badania
+            <div className={styles.dropdownMenu}>
+              <div onClick={navigateTo('/registerTest')}>Zapisz się na badanie</div>
+              <div onClick={navigateTo('/cancelTest')}>Odwołaj badanie</div>
+            </div>
+          </div>
+          <div className={`${styles.menuItem} ${styles.dropdown}`}>
+            Wizyty
+            <div className={styles.dropdownMenu}>
+              <div onClick={navigateTo('/registerDoctor')}>Zapisz się na wizytę</div>
+              <div onClick={navigateTo('/cancelDoctor')}>Odwołaj wizytę</div>
+            </div>
+          </div>
+          <div className={styles.menuItem} onClick={navigateTo('/')}>Wyloguj się</div>
+        </nav>
+        <div className={styles.accountButton} onClick={navigateTo('/account')}>Moje konto</div>
+      </header>
+
+      {/* Main Content Section */}
+      <main className={styles.mainContent}>
+        <div className={styles.accountInfo}>
+          <p>Dzień dobry, {userData?.name || "Użytkownik"} {userData?.surname || "Testowy"}</p>
         </div>
-        <br />
-        <div className="buttonContainer">
-          <input
-            className="inputButton"
-            type="button"
-            onClick={navigateTo('/registerTest')}
-            value="Zapisz się na badanie"
-          />
-        </div>
-        <br />
-        <div className="buttonContainer">
-          <input
-            className="inputButton"
-            type="button"
-            onClick={navigateTo('/registerDoctor')}
-            value="Zapisz się na wizytę"
-          />
-        </div>
-        <br />
-        <div className="buttonContainer">
-          <input
-            className="inputButton"
-            type="button"
-            onClick={navigateTo('/cancelTest')}
-            value="Odwołaj badanie"
-          />
-        </div>
-        <br />
-        <div className="buttonContainer">
-          <input
-            className="inputButton"
-            type="button"
-            onClick={navigateTo('/cancelDoctor')}
-            value="Odwołaj wizytę"
-          />
-        </div>
-        <br />
-        <div className="buttonContainer">
-          <input
-            className="inputButton logout"
-            type="button"
-            onClick={navigateTo('/')}
-            value="Wyloguj się"
-          />
-        </div>
-      </div>
+        <h1>Witaj w systemie zarządzania Twoimi wizytami i badaniami HankMed!</h1>
+      </main>
     </div>
   );
 }
