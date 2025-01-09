@@ -90,12 +90,12 @@ function RegisterTest() {
 
   function confirmAppointment() {
     const user = auth.currentUser;
-
+  
     if (user && confirmingAppointment) {
       const { testId, appointment } = confirmingAppointment;
       const db = getDatabase();
       const userAppointmentsRef = ref(db, 'appointments/' + user.uid);
-
+  
       set(userAppointmentsRef, {
         testId,
         appointmentDate: appointment.date,
@@ -103,7 +103,11 @@ function RegisterTest() {
         testName: selectedTest,
       })
         .then(() => {
-          alert('Test zapisany pomyślnie!');
+          setConfirmationDetails({
+            test: selectedTest,
+            date: appointment.date,
+            slot: appointment.time,
+          });
           clearFields();
         })
         .catch((error) => {
