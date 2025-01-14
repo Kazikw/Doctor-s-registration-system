@@ -1,36 +1,72 @@
 'use client';
-
+//v06
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import './cancelTest.css';
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { auth } from "../firebase";
 
-function CancelTest(props) {
+const currentDate = new Date().toLocaleDateString("de-DE");
+
+function CancelTest() {
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
 
-  const [tests, setTests] = useState([
-    {
-      id: 1,
-      name: "Morfologia krwi",
-      date: "2024-11-15",
-    },
-    {
-      id: 2,
-      name: "Badanie moczu",
-      date: "2024-11-10",
-    },
-    {
-      id: 3,
-      name: "Test na COVID-19",
-      date: "2024-11-05",
-    }
-  ]);
-
-  const [hoverMessage, setHoverMessage] = useState(""); 
+  const [tests, setTests] = useState([]);
+  const [hoverMessage, setHoverMessage] = useState("");
   const [confirmingTestId, setConfirmingTestId] = useState(null);
 
+  useEffect(() => {
+    const fetchTests = async () => {
+      const user = auth.currentUser;
+
+      if (!user) {
+        console.error("Użytkownik nie jest zalogowany!");
+        return;
+      }
+
+      const db = getFirestore();
+      const userTestsRef = collection(db, "appointments", user.uid, "tests");
+
+      try {
+        const snapshot = await getDocs(userTestsRef);
+        const testsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().testName,
+          date: doc.data().appointmentDate,
+        }));
+        setTests(testsData);
+      } catch (error) {
+        console.error("Błąd podczas pobierania danych: ", error);
+      }
+    };
+
+    fetchTests();
+  }, []);
+
+  const deleteTestFromFirestore = async (testId) => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.error("Użytkownik nie jest zalogowany!");
+      return;
+    }
+
+    try {
+      const db = getFirestore();
+      const testRef = doc(db, "appointments", user.uid, "tests", testId);
+      await deleteDoc(testRef);
+
+      setTests((prevTests) => prevTests.filter((test) => test.id !== testId));
+    } catch (error) {
+      console.error("Błąd podczas usuwania badania: ", error);
+    }
+  };
+
   const cancelTest = () => {
-    setTests(tests.filter(test => test.id !== confirmingTestId));
+    if (confirmingTestId) {
+      deleteTestFromFirestore(confirmingTestId);
+    }
     setConfirmingTestId(null);
   };
 
@@ -41,13 +77,13 @@ function CancelTest(props) {
   const closeConfirmationModal = () => {
     setConfirmingTestId(null);
   };
-
+//toDo Poprawnic formatowanie
   const handleHover = () => {
-    setHoverMessage("Upłynął czas na odwołanie badania"); 
+    setHoverMessage("Upłynął czas na odwołanie badania");
   };
 
   const handleHoverOut = () => {
-    setHoverMessage(""); 
+    setHoverMessage("");
   };
 
   return (
@@ -71,7 +107,7 @@ function CancelTest(props) {
                   <td>{test.name}</td>
                   <td>{test.date}</td>
                   <td>
-                    {test.date !== "2024-11-05" ? (
+                    {test.date !== currentDate ? (
                       <button
                         className="inputButton"
                         onClick={() => openConfirmationModal(test.id)}
@@ -97,14 +133,12 @@ function CancelTest(props) {
         )}
       </div>
 
-      {/* Komunikat przy najechaniu */}
       {hoverMessage && (
         <div className="hoverMessage">
           <p>{hoverMessage}</p>
         </div>
       )}
 
-      {/* Modal potwierdzenia */}
       {confirmingTestId && (
         <div className="modalOverlay">
           <div className="modalContent">
