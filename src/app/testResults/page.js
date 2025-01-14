@@ -33,10 +33,16 @@ function TestResults() {
   ]);
 
   return (
-    <div className="mainContainer">
-      <div className="titleContainer">
-        <h1>Historia badań</h1>
+    <div className="resultPage">
+      
+      <div className="header">
+        <div className="logo">HankMed</div>
       </div>
+
+      <div className="titleContainer">
+        <h2>Historia badań</h2>
+      </div>
+
       <div className="content">
         {tests.length > 0 ? (
           <table className="resultsTable">
@@ -75,12 +81,13 @@ function TestResults() {
           <p>Brak dostępnych badań</p>
         )}
       </div>
+
       <div className="buttonContainer">
         <input
           className="inputButton"
           type="button"
           onClick={navigateTo('/dashboard')}
-          value="Wroć do panelu głównego"
+          value="Wróć do panelu głównego"
         ></input>
       </div>
     </div>
