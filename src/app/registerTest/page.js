@@ -135,6 +135,11 @@ function RegisterTest() {
         });
         // Id testu mozna zmienic na jakis lepszy. W teori moga byc takie same jezeli ktos sie zapisze w tym samym momencie
         
+        setConfirmationDetails({
+          test: selectedTest,
+          date: appointment.date,
+          slot: appointment.time,
+        });
         clearFields();
       } catch (error) {
         console.error('Error writing to Firestore: ', error);
