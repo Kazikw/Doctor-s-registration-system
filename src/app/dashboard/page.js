@@ -38,7 +38,7 @@ function Dashboard() {
 
   return (
     <div className={styles.dashboard}>
-      {/* Header Section */}
+      
       <header className={styles.header}>
         <div className={styles.logo}>HankMed</div>
         <nav className={styles.navbar}>
@@ -57,12 +57,14 @@ function Dashboard() {
               <div onClick={navigateTo('/cancelDoctor')}>Odwołaj wizytę</div>
             </div>
           </div>
-          <div className={styles.menuItem} onClick={navigateTo('/')}>Wyloguj się</div>
         </nav>
-        <div className={styles.accountButton} onClick={navigateTo('/account')}>Moje konto</div>
+        <div className={styles.accountSection}>
+          <div className={styles.accountButton} onClick={navigateTo('/account')}>Moje konto</div>
+          <div className={styles.logoutButton} onClick={navigateTo('/')}>Wyloguj się</div>
+        </div>
       </header>
 
-      {/* Main Content Section */}
+      
       <main className={styles.mainContent}>
         <div className={styles.accountInfo}>
           <p>Dzień dobry, {userData?.name || "Użytkownik"} {userData?.surname || "Testowy"}</p>
