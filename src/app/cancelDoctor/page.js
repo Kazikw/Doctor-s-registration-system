@@ -1,35 +1,75 @@
-'use client';
+"use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import './cancelDoctor.css';
+import "./cancelDoctor.css";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { auth } from "../firebase";
 
-function CancelDoctor(props) {
+const currentDate = new Date().toLocaleDateString("de-DE");
+
+function CancelDoctor() {
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
 
-  const [doctors, setDoctors] = useState([
-    {
-      id: 1,
-      name: "Dr. Anna Kowalska",
-      specialization: "Internista",
-      date: "2024-11-21",
-      time: "10:00",  
-    },
-    {
-      id: 2,
-      name: "Dr. Jan Nowak",
-      specialization: "Kardiolog",
-      date: "2024-11-05",
-      time: "14:00",
-    },
-  ]);
-
+  const [appointments, setAppointments] = useState([]);
+  const [hoverMessage, setHoverMessage] = useState("");
   const [confirmingAppointmentId, setConfirmingAppointmentId] = useState(null);
-  const [hoverMessage, setHoverMessage] = useState(""); // Komunikat o odwołaniu
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const user = auth.currentUser;
+
+      if (!user) {
+        console.error("Użytkownik nie jest zalogowany!");
+        return;
+      }
+
+      const db = getFirestore();
+      const userAppointmentsRef = collection(db, "wizyty", user.uid, "Wizyty");
+
+      try {
+        const snapshot = await getDocs(userAppointmentsRef);
+        const appointmentsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().doktor,
+
+          specialization: doc.data().specialization,
+          date: doc.data().date,
+          time: doc.data().time,
+        }));
+        setAppointments(appointmentsData);
+      } catch (error) {
+        console.error("Błąd podczas pobierania danych: ", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  const deleteAppointmentFromFirestore = async (appointmentId) => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.error("Użytkownik nie jest zalogowany!");
+      return;
+    }
+
+    try {
+      const db = getFirestore();
+      const appointmentRef = doc(db, "wizyty", user.uid, "Wizyty", appointmentId);
+      await deleteDoc(appointmentRef);
+
+      setAppointments((prevAppointments) => prevAppointments.filter((appointment) => appointment.id !== appointmentId));
+    } catch (error) {
+      console.error("Błąd podczas usuwania wizyty: ", error);
+    }
+  };
 
   const cancelAppointment = () => {
-    setDoctors(doctors.filter(doctor => doctor.id !== confirmingAppointmentId));
+    if (confirmingAppointmentId) {
+      deleteAppointmentFromFirestore(confirmingAppointmentId);
+    }
     setConfirmingAppointmentId(null);
   };
 
@@ -42,11 +82,11 @@ function CancelDoctor(props) {
   };
 
   const handleHover = () => {
-    setHoverMessage("Upłynął czas na odwołanie wizyty"); // Ustawiamy komunikat
+    setHoverMessage("Upłynął czas na odwołanie wizyty");
   };
 
   const handleHoverOut = () => {
-    setHoverMessage(""); // Czyścimy komunikat
+    setHoverMessage("");
   };
 
   return (
@@ -55,7 +95,7 @@ function CancelDoctor(props) {
         <h1>Lista wizyt pacjenta</h1>
       </div>
       <div className="content">
-        {doctors.length > 0 ? (
+        {appointments.length > 0 ? (
           <table className="resultsTable">
             <thead>
               <tr>
@@ -67,17 +107,17 @@ function CancelDoctor(props) {
               </tr>
             </thead>
             <tbody>
-              {doctors.map((doctor) => (
-                <tr key={doctor.id}>
-                  <td>{doctor.name}</td>
-                  <td>{doctor.specialization}</td>
-                  <td>{doctor.date}</td>
-                  <td>{doctor.time}</td>
+              {appointments.map((appointment) => (
+                <tr key={appointment.id}>
+                  <td>{appointment.name}</td>
+                  <td>{appointment.specialization}</td>
+                  <td>{appointment.date}</td>
+                  <td>{appointment.time}</td>
                   <td>
-                    {doctor.date !== "2024-11-05" ? (
+                    {appointment.date !== currentDate ? (
                       <button
                         className="inputButton"
-                        onClick={() => openConfirmationModal(doctor.id)}
+                        onClick={() => openConfirmationModal(appointment.id)}
                       >
                         Odwołaj wizytę
                       </button>
@@ -100,14 +140,12 @@ function CancelDoctor(props) {
         )}
       </div>
 
-      {/* Komunikat przy najechaniu */}
       {hoverMessage && (
         <div className="hoverMessage">
           <p>{hoverMessage}</p>
         </div>
       )}
 
-      {/* Modal potwierdzenia */}
       {confirmingAppointmentId && (
         <div className="modalOverlay">
           <div className="modalContent">
@@ -129,7 +167,7 @@ function CancelDoctor(props) {
         <input
           className="inputButton"
           type="button"
-          onClick={navigateTo('/dashboard')}
+          onClick={navigateTo("/dashboard")}
           value="Wróć do panelu głównego"
         />
       </div>

@@ -4,6 +4,9 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './registerDoctor.css';
 import { useRouter } from 'next/navigation';
+//regDoc 07
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { auth } from "../firebase";
 
 function RegisterDoctor() {
   const router = useRouter();
@@ -94,13 +97,41 @@ function RegisterDoctor() {
     setReferralCode('');
     setConfirming(false);
   };
+//  const confirmSubmit = () => {
 
-  const confirmSubmit = () => {
-    setConfirmationDetails({
-      doctor: selectedDoctor,
-      date: selectedDate.toLocaleDateString(),
-      slot: selectedSlot,
-    });
+  const confirmSubmit = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Użytkownik nie jest zalogowany!');
+      return;
+    }
+  
+    const db = getFirestore();
+    try {
+      const userAppointmentsRef = collection(db, `wizyty/${user.uid}/Wizyty`);
+
+//      const userAppointmentsRef = collection(db, 'wizyty', user.uid, 'Wizyty');
+      await addDoc(userAppointmentsRef, {
+        doktor: selectedDoctor,
+        date: selectedDate.toLocaleDateString(),
+        time: selectedSlot,
+        specialization: selectedSpecialization,
+        kod_skierowania: hasReferral ? referralCode : null,
+        status: "Zapisano na wizytę",
+      });
+  
+      setConfirmationDetails({
+        doctor: selectedDoctor,
+        date: selectedDate.toLocaleDateString(),
+        slot: selectedSlot,
+      });
+  
+      clearFields();
+    } catch (error) {
+      console.error('Error writing to Firestore: ', error);
+      alert('Wystąpił błąd podczas zapisywania wizyty.');
+    }
+  
     setConfirming(false);
   };
 
