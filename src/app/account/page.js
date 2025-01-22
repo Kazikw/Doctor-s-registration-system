@@ -60,8 +60,8 @@ export default function Account() {
           <button className={styles.viewHistoryButton} onClick={navigateTo('/testResults')}>
             Historia badań
           </button>
-          <button className={styles.returnHomeButton} onClick={navigateTo('/')}>
-            Powrót do strony głównej
+          <button className={styles.returnHomeButton} onClick={navigateTo('/dashboard')}>
+            Powrót do panelu pacjenta
           </button>
         </div>
       </div>
