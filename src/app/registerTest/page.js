@@ -4,8 +4,6 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './registerTest.css';
 import { useRouter } from 'next/navigation';
-
-//import { ref, set, getDatabase } from 'firebase/database'; 
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { auth } from "../firebase";
 

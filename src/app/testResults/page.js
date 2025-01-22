@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { auth } from "../firebase";//zeby dzialalo: 
-import { jsPDF } from "jspdf"; //  npm install jspdf
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { jsPDF } from "jspdf";
 import './testResults.css';
 
 function TestResults() {
@@ -13,6 +13,7 @@ function TestResults() {
 
   const [tests, setTests] = useState([]);
   const [patientName, setPatientName] = useState(""); 
+  const [patientSurname, setPatientSurname] = useState("");
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -22,11 +23,15 @@ function TestResults() {
         console.error("Użytkownik nie jest zalogowany!");
         return;
       }
-
-      const db = getFirestore();
+      
       const userTestsRef = collection(db, "appointments", user.uid, "tests");
 
       try {
+        const userInfo = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userInfo);
+        const userData = docSnap.data();
+        setPatientName(userData.name);
+        setPatientSurname(userData.surname);
         const snapshot = await getDocs(userTestsRef);
         const testsData = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -36,12 +41,7 @@ function TestResults() {
           resultDetails: doc.data().resultDetails || null,
         }));
         setTests(testsData);
-
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          setPatientName(userDoc.data().fullName || "Pacjent");
-        }
+        
       } catch (error) {
         console.error("Błąd podczas pobierania danych: ", error);
       }
@@ -52,21 +52,21 @@ function TestResults() {
 
   const generatePDF = (test) => {
     const doc = new jsPDF();
-    doc.setFont("Helvetica", "normal");
+    doc.setFont("Halvetica", "normal");
 
     doc.setFontSize(18);
-    doc.text("HankMed - Wyniki badań", 105, 20, { align: "center" });
+    doc.text("HankMed - Wyniki badan", 105, 20, { align: "center" });
 
     doc.setFontSize(12);
-    doc.text(`Imię i nazwisko pacjenta: ${patientName}`, 20, 40);
+    doc.text(`Imie i nazwisko pacjenta: ${patientName} ${patientSurname}`, 20, 40);
     doc.text(`Data badania: ${test.date}`, 20, 50);
     doc.text(`Nazwa badania: ${test.name}`, 20, 60);
     doc.text(`Status: ${test.status}`, 20, 70);
 
     doc.setFontSize(14);
-    doc.text("Szczegóły wyników:", 20, 90);
+    doc.text("Szczegoly wynikow:", 20, 90);
     doc.setFontSize(12);
-    const results = test.resultDetails || "Brak szczegółowych danych";
+    const results = test.resultDetails || "Brak szczegolowych danych";
     const lines = doc.splitTextToSize(results, 170); 
     doc.text(lines, 20, 100);
 
@@ -102,7 +102,7 @@ function TestResults() {
                   <td>{test.date}</td>
                   <td>{test.status}</td>
                   <td>
-                    {test.status === "Zakończone" ? (
+                    {test.status === "Zakonczone" ? (
                       <button
                         className="inputButton"
                         onClick={() => generatePDF(test)}

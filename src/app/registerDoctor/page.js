@@ -31,7 +31,7 @@ function RegisterDoctor() {
     "Laryngolog": ["Dawid Bębenek", "Danuta Piskliwiec"],
     "Okulista": ["Olga Mętlik", "Wiesław Szkiełko"],
     "Neurolog": ["Marcin Samolot", "Alina Światowiec"],
-    "Endokrynolog": ["Eryk Trofeum", "Beata Płanetnik"],
+    "Endokrynolog": ["Eryk Trofeum", "Beata Omatko"],
     "Reumatolog": ["Wiesław Kolano", "Bogusław Poganiacz"],
     "Psychiatra": ["Borys Wariat", "Teodozja Drapichrust"],
     "Chirurg": ["Tomasz Świeżak", "Eleonora Miał"],

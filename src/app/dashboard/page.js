@@ -5,36 +5,46 @@ import { useRouter } from "next/navigation";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import styles from "./Dashboard.module.css";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 function Dashboard() {
   const [userData, setUserData] = useState(null);
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [uid, setUid] = useState("");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const navigateTo = (path) => () => router.push(path);
 
   useEffect(() => {
-    const user = auth.currentUser;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user == null) {
+        router.push("/login")
+        return;
+      }
+      const { uid } = user;
+      setUid(uid);
+      const userInfo = doc(db, "users", uid);
+      loadProfileData(userInfo);
+    });
 
-    if (!user) {
-      router.push("/login");
-      return;
+    
+    return () => unsubscribe();
+  }, []);
+
+    async function loadProfileData(ref) {
+      const docSnap = await getDoc(ref);
+      const data = docSnap.data();
+  
+      setName(data.name);
+      setSurname(data.surname);
     }
 
-    const getUserData = async () => {
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setUserData(docSnap.data());
-      } else {
-        console.log("Brak danych użytkownika w Firestore");
-      }
-      setLoading(false);
-    };
-
-    getUserData();
-  }, [router]);
+    function onClickLogout() {
+      signOut(auth);
+      navigateTo("/");
+    }
 
   return (
     <div className={styles.dashboard}>
@@ -60,14 +70,14 @@ function Dashboard() {
         </nav>
         <div className={styles.accountSection}>
           <div className={styles.accountButton} onClick={navigateTo('/account')}>Moje konto</div>
-          <div className={styles.logoutButton} onClick={navigateTo('/')}>Wyloguj się</div>
+          <div className={styles.logoutButton} onClick={onClickLogout}>Wyloguj się</div>
         </div>
       </header>
 
       
       <main className={styles.mainContent}>
         <div className={styles.accountInfo}>
-          <p>Dzień dobry, {userData?.name || "Użytkownik"} {userData?.surname || "Testowy"}</p>
+          <p>Dzień dobry, {name} {surname}</p>
         </div>
         <h1>Witaj w systemie zarządzania Twoimi wizytami i badaniami HankMed!</h1>
       </main>

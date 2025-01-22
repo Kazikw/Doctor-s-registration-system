@@ -21,9 +21,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // Initialize Realtime Database
-const db = getDatabase(app);
+// const db = getDatabase(app);
 
 // Initialize Firestore (if you use it later)
-const firestore = getFirestore(app);
+const db = getFirestore(app);
 
-export { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, addDoc, collection, firestore };
+export { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, addDoc, collection };

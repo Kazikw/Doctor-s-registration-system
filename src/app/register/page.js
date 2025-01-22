@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db, createUserWithEmailAndPassword, addDoc, collection } from "../firebase";
+import { auth, db, createUserWithEmailAndPassword } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 import styles from "./Register.module.css";
 
 function Register(props) {
@@ -60,7 +61,7 @@ function Register(props) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await addDoc(collection(db, "users"), {
+      await setDoc(doc(db, "users", user.uid), {
         name,
         surname,
         pesel,
@@ -69,7 +70,7 @@ function Register(props) {
       });
 
       console.log("Użytkownik zarejestrowany!");
-      await router.push("/dashboard");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Błąd rejestracji: ", error.message);
       setPasswordError("Coś poszło nie tak, spróbuj ponownie.");
