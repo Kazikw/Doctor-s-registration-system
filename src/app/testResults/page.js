@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { jsPDF } from "jspdf";
-import './testResults.css';
+import styles from "./TestResults.module.css";
 
 function TestResults() {
   const router = useRouter();
@@ -75,60 +75,62 @@ function TestResults() {
   };
 
   return (
-    <div className="resultPage">
-      <div className="header">
-        <div className="logo">HankMed</div>
-      </div>
+    <div className={styles.resultContainer}>
+      <header className={styles.header}>
+        <div className={styles.logo}>HankMed</div>
+      </header>
 
-      <div className="titleContainer">
-        <h2>Historia badań</h2>
-      </div>
+      <div className={styles.mainContainer}>
+        <div className={styles.titleContainer}>
+          <h1>Historia badań</h1>
+        </div>
 
-      <div className="content">
-        {tests.length > 0 ? (
-          <table className="resultsTable">
-            <thead>
-              <tr>
-                <th>Nazwa badania</th>
-                <th>Data</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tests.map((test) => (
-                <tr key={test.id}>
-                  <td>{test.name}</td>
-                  <td>{test.date}</td>
-                  <td>{test.status}</td>
-                  <td>
-                    {test.status === "Zakonczone" ? (
-                      <button
-                        className="inputButton"
-                        onClick={() => generatePDF(test)}
-                      >
-                        Pobierz wynik
-                      </button>
-                    ) : (
-                      <span className="pendingLabel">Wynik niedostępny</span>
-                    )}
-                  </td>
+        <div className={styles.content}>
+          {tests.length > 0 ? (
+            <table className={styles.resultsTable}>
+              <thead>
+                <tr>
+                  <th>Nazwa badania</th>
+                  <th>Data</th>
+                  <th>Status</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>Brak dostępnych badań</p>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {tests.map((test) => (
+                  <tr key={test.id}>
+                    <td>{test.name}</td>
+                    <td>{test.date}</td>
+                    <td>{test.status}</td>
+                    <td>
+                      {test.status === "Zakonczone" ? (
+                        <button
+                          className={styles.inputButton}
+                          onClick={() => generatePDF(test)}
+                        >
+                          Pobierz wynik
+                        </button>
+                      ) : (
+                        <span className={styles.pendingLabel}>Wynik niedostępny</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>Brak dostępnych badań</p>
+          )}
+        </div>
 
-      <div className="buttonContainer">
-        <input
-          className="inputButton"
-          type="button"
-          onClick={navigateTo('/dashboard')}
-          value="Wróć do panelu głównego"
-        ></input>
+        <div className={styles.buttonContainer}>
+          <input
+            className={styles.inputButton}
+            type="button"
+            onClick={navigateTo('/dashboard')}
+            value="Wróć do panelu głównego"
+          />
+        </div>
       </div>
     </div>
   );
