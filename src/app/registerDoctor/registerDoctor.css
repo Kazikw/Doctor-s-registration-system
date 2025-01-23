@@ -132,17 +132,18 @@ select:hover {
 }
 
 .inputButton {
-  margin: 10px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #4caf50;
+  background-color: #007bff;
   color: white;
-  cursor: pointer;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
   border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .inputButton:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
 .calendarContainer {
