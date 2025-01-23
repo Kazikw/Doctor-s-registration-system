@@ -240,7 +240,7 @@ function RegisterTest() {
                 <div className="calendarContainer">
                   <h3>Wybierz datę:</h3>
                   <p style={{ marginBottom: '10px', fontSize: '14px', color: '#d9534f' }}>
-                    Nie możesz zapisać się na badanie tego samego dnia ani w weekend.
+                    Nie możesz zapisać się na badanie tego samego dnia, którego ma się odbyć.
                   </p>
                   <Calendar
                     onChange={setSelectedDate}
