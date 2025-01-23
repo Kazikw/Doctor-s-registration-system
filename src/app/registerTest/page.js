@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { auth } from "../firebase";
 
-
 function RegisterTest() {
   const router = useRouter();
   const navigateTo = (path) => () => router.push(path);
@@ -106,22 +105,24 @@ function RegisterTest() {
     (hasReferral && !isReferralCodeValid);
 
   const tileDisabled = ({ date }) => {
-    const day = date.getDay();
-    return day === 0 || day === 6;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const day = date.getDay(); // 0 = niedziela, 6 = sobota
+    return date <= today || day === 0 || day === 6; // Wyłącz dni wcześniejsze, soboty i niedziele
   };
 
   async function confirmAppointment() {
     const user = auth.currentUser;
-  
+
     if (!user) {
       alert('Użytkownik nie jest zalogowany!');
       return;
     }
-  
+
     if (confirmingAppointment) {
       const { testId, appointment } = confirmingAppointment;
       const db = getFirestore();
-  
+
       try {
         const userAppointmentsRef = collection(db, 'appointments', user.uid, 'tests');
         await addDoc(userAppointmentsRef, {
@@ -131,8 +132,7 @@ function RegisterTest() {
           testName: selectedTest,
           status: "Zapisano na badanie"
         });
-        // Id testu mozna zmienic na jakis lepszy. W teori moga byc takie same jezeli ktos sie zapisze w tym samym momencie
-        
+
         setConfirmationDetails({
           test: selectedTest,
           date: appointment.date,
@@ -145,7 +145,7 @@ function RegisterTest() {
       }
     }
   }
-  
+
   return (
     <div className="mainContainer">
       <h1>Zapisz się na badanie</h1>
@@ -213,7 +213,7 @@ function RegisterTest() {
                       <p>Pamiętaj, że za badanie należy zapłacić.</p>
                     </div>
                   </div>
-                  )}
+                )}
                 {hasReferral && (
                   <div className="referralInputContainer">
                     <input
@@ -239,6 +239,9 @@ function RegisterTest() {
               {(hasReferral === false || (hasReferral && isReferralCodeValid)) && (
                 <div className="calendarContainer">
                   <h3>Wybierz datę:</h3>
+                  <p style={{ marginBottom: '10px', fontSize: '14px', color: '#d9534f' }}>
+                    Nie możesz zapisać się na badanie tego samego dnia, którego ma się odbyć.
+                  </p>
                   <Calendar
                     onChange={setSelectedDate}
                     value={selectedDate}
@@ -297,7 +300,7 @@ function RegisterTest() {
           <div className="modalContent">
             <h2>Potwierdzenie</h2>
             <p>
-              Czy na pewno chcesz zapisać się na wizytę dnia {confirmingAppointment.appointment.date} o godzinie {confirmingAppointment.appointment.time}?
+              Czy na pewno chcesz zapisać się na badanie <strong>{selectedTest}</strong> dnia <strong>{confirmingAppointment.appointment.date}</strong> o godzinie <strong>{confirmingAppointment.appointment.time}</strong>?
             </p>
             <div className="modalButtons">
               <button className="inputButton" onClick={confirmAppointment}>
