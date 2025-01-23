@@ -2,7 +2,7 @@
 //v06
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import './cancelTest.css';
+import styles from "./CancelTest.module.css";
 import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { auth } from "../firebase";
 
@@ -87,82 +87,88 @@ function CancelTest() {
   };
 
   return (
-    <div className="mainContainer">
-      <div className="titleContainer">
-        <h1>Lista badań pacjenta</h1>
-      </div>
-      <div className="content">
-        {tests.length > 0 ? (
-          <table className="resultsTable">
-            <thead>
-              <tr>
-                <th>Nazwa badania</th>
-                <th>Data</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tests.map((test) => (
-                <tr key={test.id}>
-                  <td>{test.name}</td>
-                  <td>{test.date}</td>
-                  <td>
-                    {test.date !== currentDate ? (
-                      <button
-                        className="inputButton"
-                        onClick={() => openConfirmationModal(test.id)}
-                      >
-                        Odwołaj badanie
-                      </button>
-                    ) : (
-                      <span
-                        className="pendingLabel"
-                        onMouseEnter={handleHover}
-                        onMouseLeave={handleHoverOut}
-                      >
-                        Nie można odwołać
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>Brak dostępnych badań</p>
-        )}
-      </div>
+    <div className={styles.cancelContainer}>
+      <header className={styles.header}>
+        <div className={styles.logo}>HankMed</div>
+      </header>
 
-      {hoverMessage && (
-        <div className="hoverMessage">
-          <p>{hoverMessage}</p>
+      <div className={styles.mainContainer}>
+        <div className={styles.titleContainer}>
+          <h1>Lista badań pacjenta</h1>
         </div>
-      )}
+        <div className={styles.content}>
+          {tests.length > 0 ? (
+            <table className={styles.resultsTable}>
+              <thead>
+                <tr>
+                  <th>Nazwa badania</th>
+                  <th>Data</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tests.map((test) => (
+                  <tr key={test.id}>
+                    <td>{test.name}</td>
+                    <td>{test.date}</td>
+                    <td>
+                      {test.date !== currentDate ? (
+                        <button
+                          className={styles.cancelButton}
+                          onClick={() => openConfirmationModal(test.id)}
+                        >
+                          Odwołaj badanie
+                        </button>
+                      ) : (
+                        <span
+                          className={styles.pendingLabel}
+                          onMouseEnter={handleHover}
+                          onMouseLeave={handleHoverOut}
+                        >
+                          Nie można odwołać
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>Brak dostępnych badań</p>
+          )}
+        </div>
 
-      {confirmingTestId && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Potwierdzenie</h2>
-            <p>Czy na pewno chcesz odwołać to badanie?</p>
-            <div className="modalButtons">
-              <button className="inputButton" onClick={cancelTest}>
-                Tak, odwołaj
-              </button>
-              <button className="inputButton" onClick={closeConfirmationModal}>
-                Nie, wróć
-              </button>
+        {hoverMessage && (
+          <div className={styles.hoverMessage}>
+            <p>{hoverMessage}</p>
+          </div>
+        )}
+
+        {confirmingTestId && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h2>Potwierdzenie</h2>
+              <p>Czy na pewno chcesz odwołać to badanie?</p>
+              <div className={styles.modalButtons}>
+                <button className={styles.cancelButton} onClick={cancelTest}>
+                  Tak, odwołaj
+                </button>
+                <button className={styles.inputButton} onClick={closeConfirmationModal}>
+                  Nie, wróć
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="buttonContainer">
-        <input
-          className="inputButton"
-          type="button"
-          onClick={navigateTo('/dashboard')}
-          value="Wróć do panelu głównego"
-        />
+        <div className={styles.buttonContainer}>
+          <input
+            className={styles.inputButton}
+            type="button"
+            onClick={navigateTo('/dashboard')}
+            value="Wróć do panelu głównego"
+          />
+        </div>
       </div>
     </div>
   );
