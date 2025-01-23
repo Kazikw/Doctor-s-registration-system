@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import styles from './page.module.css';
 
 function Home(props) {
   const { loggedIn, username } = props;
@@ -15,44 +16,47 @@ function Home(props) {
   }
 
   return (
-    <div className="mainContainer">
-      {/* Tytuł strony */}
-      <div className="titleContainer">
+    <div className={styles.mainContainer}>
+      <div className={styles.header}>
         <h1>HankMed</h1>
       </div>
 
-      {/* Kontener dla sekcji rejestracji i logowania */}
-      <div className="loginRegisterContainer">
-        {/* Sekcja rejestracji */}
-        <div className="formContainer">
-          <div className="titleRow">
+     
+      <div className={styles.titleContainer}>
+        <h2>Witaj w aplikacji HankMed!</h2>
+      </div>
+
+      
+      <div className={styles.loginRegisterContainer}>
+        <div className={styles.formContainer}>
+          <div className={styles.titleRow}>
             <p>Stwórz konto:</p>
           </div>
-          <div className="buttonRow">
+          <div className={styles.buttonRow}>
             <input
-              className="inputButton"
+              className={styles.inputButton}
               type="button"
               onClick={onButtonClickRegister}
               value="Zarejestruj się"
-            ></input>
+            />
           </div>
         </div>
 
-        {/* Pionowa linia oddzielająca */}
-        <div className="separator"></div>
+      
+        <div className={styles.separator}></div>
 
-        {/* Sekcja logowania */}
-        <div className="formContainer">
-          <div className="titleRow">
+       
+        <div className={styles.formContainer}>
+          <div className={styles.titleRow}>
             <p>Mam już konto:</p>
           </div>
-          <div className="buttonRow">
+          <div className={styles.buttonRow}>
             <input
-              className="inputButton"
+              className={styles.inputButton}
               type="button"
               onClick={onButtonClickLogin}
               value="Zaloguj się"
-            ></input>
+            />
           </div>
         </div>
       </div>

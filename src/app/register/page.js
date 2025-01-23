@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db, createUserWithEmailAndPassword, addDoc, collection } from "../firebase";
+import { auth, db, createUserWithEmailAndPassword } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import styles from "./Register.module.css";
 
 function Register(props) {
   const [password, setPassword] = useState("");
@@ -36,7 +38,7 @@ function Register(props) {
     }
 
     if (pesel.length !== 11) {
-      setPeselError("Proszę wprowadzić prawidłowy numer pesel");
+      setPeselError("Proszę wprowadzić prawidłowy numer PESEL");
       return;
     }
 
@@ -59,8 +61,7 @@ function Register(props) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      
-      await addDoc(collection(db, "users"), {
+      await setDoc(doc(db, "users", user.uid), {
         name,
         surname,
         pesel,
@@ -69,7 +70,7 @@ function Register(props) {
       });
 
       console.log("Użytkownik zarejestrowany!");
-      await router.push("/dashboard");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Błąd rejestracji: ", error.message);
       setPasswordError("Coś poszło nie tak, spróbuj ponownie.");
@@ -81,77 +82,71 @@ function Register(props) {
   };
 
   return (
-    <div className="mainContainer">
-      <div className="titleContainer">
-        <div>Stwórz konto</div>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={name}
-          placeholder="Wpisz swoje imię"
-          onChange={(ev) => setName(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{nameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={surname}
-          type="text"
-          placeholder="Wpisz swoje nazwisko"
-          onChange={(ev) => setSurname(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{surnameError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={pesel}
-          placeholder="Wpisz swój numer PESEL"
-          onChange={(ev) => setPesel(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{peselError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={email}
-          type="email"
-          placeholder="Wpisz swój adres email"
-          onChange={(ev) => setEmail(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{emailError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={password}
-          type="password"
-          placeholder="Wpisz swoje hasło"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className="inputBox"
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value="Stwórz konto"
-          type="button"
-          onClick={handleRegister}
-          className="inputButton"
-        />
-      </div>
-      <div className="backButtonContainer">
-        <button onClick={handleBackButtonClick} className="backButton">
-          Wstecz
-        </button>
-      </div>
+    <div className={styles.registerPage}>
+      <header className={styles.header}>
+        <div className={styles.logo}>HankMed</div>
+      </header>
+      <main className={styles.mainContainer}>
+        <div className={styles.titleContainer}>Stwórz konto</div>
+        <div className={styles.inputContainer}>
+          <input
+            value={name}
+            placeholder="Wpisz swoje imię"
+            onChange={(ev) => setName(ev.target.value)}
+            className={styles.inputBox}
+          />
+          <label className={styles.errorLabel}>{nameError}</label>
+        </div>
+        <div className={styles.inputContainer}>
+          <input
+            value={surname}
+            type="text"
+            placeholder="Wpisz swoje nazwisko"
+            onChange={(ev) => setSurname(ev.target.value)}
+            className={styles.inputBox}
+          />
+          <label className={styles.errorLabel}>{surnameError}</label>
+        </div>
+        <div className={styles.inputContainer}>
+          <input
+            value={pesel}
+            placeholder="Wpisz swój numer PESEL"
+            onChange={(ev) => setPesel(ev.target.value)}
+            className={styles.inputBox}
+          />
+          <label className={styles.errorLabel}>{peselError}</label>
+        </div>
+        <div className={styles.inputContainer}>
+          <input
+            value={email}
+            type="email"
+            placeholder="Wpisz swój adres email"
+            onChange={(ev) => setEmail(ev.target.value)}
+            className={styles.inputBox}
+          />
+          <label className={styles.errorLabel}>{emailError}</label>
+        </div>
+        <div className={styles.inputContainer}>
+          <input
+            value={password}
+            type="password"
+            placeholder="Wpisz swoje hasło"
+            onChange={(ev) => setPassword(ev.target.value)}
+            className={styles.inputBox}
+          />
+          <label className={styles.errorLabel}>{passwordError}</label>
+        </div>
+        <div className={styles.inputContainer}>
+          <button onClick={handleRegister} className={styles.inputButton}>
+            Stwórz konto
+          </button>
+        </div>
+        <div className={styles.backButtonContainer}>
+          <button onClick={handleBackButtonClick} className={styles.backButton}>
+            Wstecz
+          </button>
+        </div>
+      </main>
     </div>
   );
 }

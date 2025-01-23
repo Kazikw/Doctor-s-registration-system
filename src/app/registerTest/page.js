@@ -4,8 +4,9 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './registerTest.css';
 import { useRouter } from 'next/navigation';
-import { ref, set, getDatabase } from 'firebase/database'; 
-import { auth } from "../firebase"; 
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { auth } from "../firebase";
+
 
 function RegisterTest() {
   const router = useRouter();
@@ -109,37 +110,42 @@ function RegisterTest() {
     return day === 0 || day === 6;
   };
 
-  function confirmAppointment() {
+  async function confirmAppointment() {
     const user = auth.currentUser;
   
-    if (user && confirmingAppointment) {
-      const { testId, appointment } = confirmingAppointment;
-      const db = getDatabase();
-      const userAppointmentsRef = ref(db, 'appointments/' + user.uid);
+    if (!user) {
+      alert('Użytkownik nie jest zalogowany!');
+      return;
+    }
   
-      set(userAppointmentsRef, {
-        testId,
-        appointmentDate: appointment.date,
-        appointmentTime: appointment.time,
-        testName: selectedTest,
-      })
-        .then(() => {
-          setConfirmationDetails({
-            test: selectedTest,
-            date: appointment.date,
-            slot: appointment.time,
-          });
-          clearFields();
-        })
-        .catch((error) => {
-          console.error("Error writing to Firebase: ", error);
-          alert('Wystąpił błąd podczas zapisywania testu.');
+    if (confirmingAppointment) {
+      const { testId, appointment } = confirmingAppointment;
+      const db = getFirestore();
+  
+      try {
+        const userAppointmentsRef = collection(db, 'appointments', user.uid, 'tests');
+        await addDoc(userAppointmentsRef, {
+          testId: Date.now(),
+          appointmentDate: appointment.date,
+          appointmentTime: appointment.time,
+          testName: selectedTest,
+          status: "Zapisano na badanie"
         });
-    } else {
-      alert('Brak zalogowanego użytkownika lub danych do zapisania.');
+        // Id testu mozna zmienic na jakis lepszy. W teori moga byc takie same jezeli ktos sie zapisze w tym samym momencie
+        
+        setConfirmationDetails({
+          test: selectedTest,
+          date: appointment.date,
+          slot: appointment.time,
+        });
+        clearFields();
+      } catch (error) {
+        console.error('Error writing to Firestore: ', error);
+        alert('Wystąpił błąd podczas zapisywania testu.');
+      }
     }
   }
-
+  
   return (
     <div className="mainContainer">
       <h1>Zapisz się na badanie</h1>

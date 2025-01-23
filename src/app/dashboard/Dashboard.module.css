@@ -25,6 +25,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-grow: 1;
   }
 
 .navbar a {
@@ -100,35 +101,37 @@
     background-color: #edeeed;
 }
 
-.account-section {
+.accountSection {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
 }
 
 .accountButton {
-    background-color: #007bff;
+    background-color: #51a2f8;
     color: #fff;
     padding: 8px 12px;
     border-radius: 4px;
     text-decoration: none;
     cursor: pointer;
+    margin-right: 20px;
 }
 
 .accountButton:hover {
     background-color: #0056b3;
 }
 
-.logout {
-    margin-top: 5px;
-    background-color: #dc3545;
-    color: #fff;
+.logoutButton {
+    background-color: #f03043;
+    color: white;
     padding: 8px 12px;
     border-radius: 4px;
     text-decoration: none;
+    cursor: pointer;
 }
 
-.logout:hover {
+.logoutButton:hover {
     background-color: #c82333;
 }
 

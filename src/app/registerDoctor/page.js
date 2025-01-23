@@ -4,6 +4,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './registerDoctor.css';
 import { useRouter } from 'next/navigation';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { auth } from "../firebase";
 
 function RegisterDoctor() {
   const router = useRouter();
@@ -28,7 +30,7 @@ function RegisterDoctor() {
     "Laryngolog": ["Dawid Bębenek", "Danuta Piskliwiec"],
     "Okulista": ["Olga Mętlik", "Wiesław Szkiełko"],
     "Neurolog": ["Marcin Samolot", "Alina Światowiec"],
-    "Endokrynolog": ["Eryk Trofeum", "Beata Płanetnik"],
+    "Endokrynolog": ["Eryk Trofeum", "Beata Omatko"],
     "Reumatolog": ["Wiesław Kolano", "Bogusław Poganiacz"],
     "Psychiatra": ["Borys Wariat", "Teodozja Drapichrust"],
     "Chirurg": ["Tomasz Świeżak", "Eleonora Miał"],
@@ -95,12 +97,37 @@ function RegisterDoctor() {
     setConfirming(false);
   };
 
-  const confirmSubmit = () => {
-    setConfirmationDetails({
-      doctor: selectedDoctor,
-      date: selectedDate.toLocaleDateString(),
-      slot: selectedSlot,
-    });
+  const confirmSubmit = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Użytkownik nie jest zalogowany!');
+      return;
+    }
+
+    const db = getFirestore();
+    try {
+      const userAppointmentsRef = collection(db, `wizyty/${user.uid}/Wizyty`);
+      await addDoc(userAppointmentsRef, {
+        doktor: selectedDoctor,
+        date: selectedDate.toLocaleDateString(),
+        time: selectedSlot,
+        specialization: selectedSpecialization,
+        kod_skierowania: hasReferral ? referralCode : null,
+        status: "Zapisano na wizytę",
+      });
+
+      setConfirmationDetails({
+        doctor: selectedDoctor,
+        date: selectedDate.toLocaleDateString(),
+        slot: selectedSlot,
+      });
+
+      clearFields();
+    } catch (error) {
+      console.error('Error writing to Firestore: ', error);
+      alert('Wystąpił błąd podczas zapisywania wizyty.');
+    }
+
     setConfirming(false);
   };
 
@@ -113,8 +140,9 @@ function RegisterDoctor() {
     !(selectedSpecialization && selectedDoctor && selectedDate && selectedSlot);
 
   const tileDisabled = ({ date }) => {
-    const day = date.getDay();
-    return day === 0 || day === 6; 
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return date <= today || date.getDay() === 0 || date.getDay() === 6;
   };
 
   const showCalendar =
@@ -187,8 +215,7 @@ function RegisterDoctor() {
                     <p>Pamiętaj, że za wizytę należy zapłacić.</p>
                   </div>
                 </div>
-                )}
-
+              )}
 
               {hasReferral && (
                 <div className="referralInputContainer">
@@ -214,14 +241,18 @@ function RegisterDoctor() {
           )}
 
           {showCalendar && (
-            <div className="calendarContainer">
-              <h3>Wybierz datę:</h3>
-              <Calendar
-                onChange={setSelectedDate}
-                value={selectedDate}
-                minDate={new Date()}
-                tileDisabled={tileDisabled}
-              />
+            <div className="calendarSection">
+              <p style={{ marginBottom: '10px', fontSize: '14px', color: '#d9534f' }}>
+                  Nie możesz zapisać się na wizytę tego samego dnia, którego ma się odbyć.
+              </p>
+              <div className="calendarContainer">
+                <h3>Wybierz datę:</h3>
+                <Calendar
+                  onChange={setSelectedDate}
+                  value={selectedDate}
+                  tileDisabled={tileDisabled}
+                />
+              </div>
             </div>
           )}
 

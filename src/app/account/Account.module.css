@@ -1,0 +1,101 @@
+.accountContainer {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .header {
+    background-color: white;
+    padding: 20px 40px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px;
+    text-align: center;
+    background: linear-gradient(to bottom, #a8f3f9, white);
+    width: 100%;
+  }
+  
+  .h2Style {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #304357;
+    margin-bottom: 20px;
+  }
+  
+  .userInfo {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .userInfo p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: #333;
+    text-align: left;
+  }
+  
+  .buttonContainer {
+    text-align: center;
+  }
+  
+  .viewHistoryButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    max-width: 250px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .viewHistoryButton:hover {
+    background-color: #0056b3;
+  }
+
+  .returnHomeButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .returnHomeButton:hover {
+    background-color: #0056b3;
+  }
+  
