@@ -63,6 +63,7 @@ function NotificationsBox() {
     return () => unsubscribeTestResults();
   }, [user]);
 
+
   useEffect(() => {
     const generateNotifications = () => {
       const messages = [];
