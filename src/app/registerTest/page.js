@@ -113,16 +113,16 @@ function RegisterTest() {
 
   async function confirmAppointment() {
     const user = auth.currentUser;
-
+  
     if (!user) {
       alert('Użytkownik nie jest zalogowany!');
       return;
     }
-
+  
     if (confirmingAppointment) {
       const { testId, appointment } = confirmingAppointment;
       const db = getFirestore();
-
+  
       try {
         const userAppointmentsRef = collection(db, 'appointments', user.uid, 'tests');
         await addDoc(userAppointmentsRef, {
@@ -130,9 +130,10 @@ function RegisterTest() {
           appointmentDate: appointment.date,
           appointmentTime: appointment.time,
           testName: selectedTest,
-          status: "Zapisano na badanie"
+          status: "Zapisano na badanie",
+          referralCode: hasReferral ? referralCode : null 
         });
-
+  
         setConfirmationDetails({
           test: selectedTest,
           date: appointment.date,
@@ -145,6 +146,7 @@ function RegisterTest() {
       }
     }
   }
+  
 
   return (
     <div className="mainContainer">

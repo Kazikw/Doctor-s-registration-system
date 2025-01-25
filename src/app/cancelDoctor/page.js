@@ -30,14 +30,22 @@ function CancelDoctor() {
 
       try {
         const snapshot = await getDocs(userAppointmentsRef);
-        const appointmentsData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().doktor,
+        const today = new Date();
 
-          specialization: doc.data().specialization,
-          date: doc.data().date,
-          time: doc.data().time,
-        }));
+        const appointmentsData = snapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            name: doc.data().doktor,
+            specialization: doc.data().specialization,
+            date: doc.data().date,
+            time: doc.data().time,
+          }))
+          .filter((appointment) => {
+            const [day, month, year] = appointment.date.split(".");
+            const appointmentDate = new Date(`${year}-${month}-${day}`);
+            return appointmentDate >= today;
+          });
+
         setAppointments(appointmentsData);
       } catch (error) {
         console.error("Błąd podczas pobierania danych: ", error);
