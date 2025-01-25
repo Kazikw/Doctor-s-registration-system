@@ -65,6 +65,7 @@ function Dashboard() {
             Wizyty
             <div className={styles.dropdownMenu}>
               <div onClick={navigateTo('/registerDoctor')}>Zapisz się na wizytę</div>
+              <div onClick={navigateTo('/doctorHistory')}>Historia wizyt</div>
               <div onClick={navigateTo('/cancelDoctor')}>Odwołaj wizytę</div>
             </div>
           </div>

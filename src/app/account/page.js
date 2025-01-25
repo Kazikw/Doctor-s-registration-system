@@ -60,8 +60,11 @@ export default function Account() {
           <button className={styles.viewHistoryButton} onClick={navigateTo('/testResults')}>
             Historia badań
           </button>
+          <button className={styles.viewHistoryButton} onClick={navigateTo('/doctorHistory')}>
+            Historia wizyt
+          </button>
           <button className={styles.returnHomeButton} onClick={navigateTo('/dashboard')}>
-            Powrót do panelu pacjenta
+          Wróć do panelu głównego
           </button>
         </div>
       </div>
