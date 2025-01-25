@@ -1,93 +1,72 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import './notificationsBox.css';
+import { onAuthStateChanged } from "firebase/auth";
+import "./notificationsBox.css";
 
 function NotificationsBox() {
   const [appointments, setAppointments] = useState([]);
   const [testResults, setTestResults] = useState([]);
   const [currentDateTime, setCurrentDateTime] = useState("");
   const [notificationMessages, setNotificationMessages] = useState([]);
+  const [user, setUser] = useState(null);
 
-  // Pobieranie wizyt z Firebase i zapis do localStorage
   useEffect(() => {
-    const fetchAppointments = async () => {
-      const user = auth.currentUser;
-
-      if (!user) {
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
         console.error("Użytkownik nie jest zalogowany!");
-        return;
       }
+    });
 
-      try {
-        const userAppointmentsRef = collection(db, "wizyty", user.uid, "Wizyty");
-        const snapshot = await getDocs(userAppointmentsRef);
-        const fetchedAppointments = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        // Zapisz dane do localStorage
-        localStorage.setItem('appointments', JSON.stringify(fetchedAppointments));
-        setAppointments(fetchedAppointments);
-      } catch (error) {
-        console.error("Błąd podczas pobierania wizyt:", error);
-      }
-    };
-
-    // Sprawdzamy, czy dane wizyt są zapisane w localStorage
-    const savedAppointments = localStorage.getItem('appointments');
-    if (savedAppointments) {
-      setAppointments(JSON.parse(savedAppointments));
-    } else {
-      fetchAppointments();
-    }
+    return () => unsubscribeAuth();
   }, []);
 
-  // Pobieranie wyników badań z Firebase i zapis do localStorage
   useEffect(() => {
-    const fetchTestResults = async () => {
-      const user = auth.currentUser;
+    if (!user) return;
 
-      if (!user) {
-        console.error("Użytkownik nie jest zalogowany!");
-        return;
-      }
+    const userAppointmentsRef = collection(db, "wizyty", user.uid, "Wizyty");
 
-      try {
-        const userTestResultsRef = collection(db, "appointments", user.uid, "tests");
-        const snapshot = await getDocs(userTestResultsRef);
-        const fetchedResults = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().testName,
-          date: doc.data().appointmentDate,
-          status: doc.data().status,
-          time: doc.data().appointmentTime
-        }));
+    const unsubscribeAppointments = onSnapshot(userAppointmentsRef, (snapshot) => {
+      const fetchedAppointments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-        // Zapisz dane do localStorage
-        localStorage.setItem('testResults', JSON.stringify(fetchedResults));
-        setTestResults(fetchedResults);
-      } catch (error) {
-        console.error("Błąd podczas pobierania wyników badań:", error);
-      }
-    };
+      setAppointments(fetchedAppointments);
+      localStorage.setItem("appointments", JSON.stringify(fetchedAppointments));
+    });
 
-    // Sprawdzamy, czy dane wyników badań są zapisane w localStorage
-    const savedTestResults = localStorage.getItem('testResults');
-    if (savedTestResults) {
-      setTestResults(JSON.parse(savedTestResults));
-    } else {
-      fetchTestResults();
-    }
-  }, []);
+    return () => unsubscribeAppointments();
+  }, [user]);
 
-  // Generowanie komunikatów powiadomień
+  useEffect(() => {
+    if (!user) return;
+
+    const userTestResultsRef = collection(db, "appointments", user.uid, "tests");
+
+    const unsubscribeTestResults = onSnapshot(userTestResultsRef, (snapshot) => {
+      const fetchedResults = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().testName,
+        date: doc.data().appointmentDate,
+        status: doc.data().status,
+        time: doc.data().appointmentTime,
+      }));
+
+      setTestResults(fetchedResults);
+      localStorage.setItem("testResults", JSON.stringify(fetchedResults));
+    });
+
+    return () => unsubscribeTestResults();
+  }, [user]);
+
   useEffect(() => {
     const generateNotifications = () => {
       const messages = [];
 
-      // Komunikaty o badaniach
       if (testResults.length === 0) {
         messages.push("Dawno nie robiłeś badań. Może warto sprawdzić swój stan zdrowia?");
       } else {
@@ -97,7 +76,9 @@ function NotificationsBox() {
           } else if (result.status === "Zakonczone") {
             messages.push(`Wynik badania "${result.name}" jest do odbioru.`);
           } else if (result.status === "Zapisano na badanie") {
-            messages.push(`Zapisano na badanie "${result.name}" dnia "${result.date}" o godzinie "${result.time}"`);
+            messages.push(
+              `Zapisano na badanie "${result.name}" dnia "${result.date}" o godzinie "${result.time}".`
+            );
           }
         });
       }
@@ -125,7 +106,7 @@ function NotificationsBox() {
 
       <div className="current-date-time">Aktualny czas: {currentDateTime}</div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
         {/* Wizyty */}
         <div className="appointments-section">
           <h3>Wizyty</h3>
@@ -159,6 +140,5 @@ function NotificationsBox() {
     </div>
   );
 }
-
 
 export default NotificationsBox;
