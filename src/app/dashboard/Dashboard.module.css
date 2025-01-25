@@ -144,6 +144,7 @@
     min-height: 100vh;
     padding: 40px;
     text-align: center;
+    width: 100%;
 }
 
 .mainContent h1 {
@@ -151,6 +152,27 @@
     font-weight: bold;
     color: #304357;
     margin-top: 80px;
+}
+
+.notificationsWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+
+.notifications-box {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .welcome {
@@ -189,4 +211,5 @@
 .account-section .accountButton:hover {
     background-color: #0056b3;
 }
+
 

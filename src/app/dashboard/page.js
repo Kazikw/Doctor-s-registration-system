@@ -6,6 +6,7 @@ import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import styles from "./Dashboard.module.css";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import NotificationsBox from "../notificationsBox/NotificationsBox";
 
 function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -80,6 +81,9 @@ function Dashboard() {
           <p>Dzień dobry, {name} {surname}</p>
         </div>
         <h1>Witaj w systemie zarządzania Twoimi wizytami i badaniami HankMed!</h1>
+        <div className={styles.notificationsWrapper}>
+          <NotificationsBox uid={uid} />
+        </div>
       </main>
     </div>
   );
