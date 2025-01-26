@@ -35,8 +35,12 @@ function NotificationsBox() {
         ...doc.data(),
       }));
 
-      setAppointments(fetchedAppointments);
-      localStorage.setItem("appointments", JSON.stringify(fetchedAppointments));
+      const filteredAppointments = fetchedAppointments.filter(
+        (appointment) => appointment.status !== "Zakonczona"
+      );
+
+      setAppointments(filteredAppointments);
+      localStorage.setItem("appointments", JSON.stringify(filteredAppointments));
     });
 
     return () => unsubscribeAppointments();
@@ -62,7 +66,6 @@ function NotificationsBox() {
 
     return () => unsubscribeTestResults();
   }, [user]);
-
 
   useEffect(() => {
     const generateNotifications = () => {

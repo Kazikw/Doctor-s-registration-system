@@ -36,11 +36,6 @@ function CancelTest() {
           name: doc.data().testName,
           date: doc.data().appointmentDate,
         }))
-        .filter((appointment) => {
-          const [day, month, year] = appointment.date.split(".");
-          const appointmentDate = new Date(`${year}-${month}-${day}`);
-          return appointmentDate >= today;
-        });
 
         setTests(testsData);
       } catch (error) {

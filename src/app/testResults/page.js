@@ -82,7 +82,7 @@ function TestResults() {
 
       <div className={styles.mainContainer}>
         <div className={styles.titleContainer}>
-          <h1>Historia badań</h1>
+          <h1>Odbiór wyników badań laboratoryjnych</h1>
         </div>
 
         <div className={styles.content}>

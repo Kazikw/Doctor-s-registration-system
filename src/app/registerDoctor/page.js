@@ -113,6 +113,7 @@ function RegisterDoctor() {
         time: selectedSlot,
         specialization: selectedSpecialization,
         kod_skierowania: hasReferral ? referralCode : null,
+        prescriptionCode: null,
         status: "Zapisano na wizytę",
       });
 

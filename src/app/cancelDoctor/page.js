@@ -40,12 +40,7 @@ function CancelDoctor() {
             date: doc.data().date,
             time: doc.data().time,
           }))
-          .filter((appointment) => {
-            const [day, month, year] = appointment.date.split(".");
-            const appointmentDate = new Date(`${year}-${month}-${day}`);
-            return appointmentDate >= today;
-          });
-
+    
         setAppointments(appointmentsData);
       } catch (error) {
         console.error("Błąd podczas pobierania danych: ", error);
