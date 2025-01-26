@@ -35,7 +35,8 @@ function CancelTest() {
           id: doc.id,
           name: doc.data().testName,
           date: doc.data().appointmentDate,
-        }))
+          status: doc.data().status
+        })).filter((TestB) => TestB.status === "Zapisano na badanie");
 
         setTests(testsData);
       } catch (error) {
