@@ -17,7 +17,7 @@ function NotificationsBox() {
         setUser(currentUser);
       } else {
         setUser(null);
-        console.error("Użytkownik nie jest zalogowany!");
+        // console.error("Użytkownik nie jest zalogowany!");
       }
     });
 

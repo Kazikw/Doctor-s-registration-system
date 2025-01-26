@@ -26,14 +26,14 @@ function Dashboard() {
       setUid(uid);
       const userInfo = doc(db, "users", uid);
       await loadProfileData(userInfo);
-      await checkAndUpdateVisits(uid);  // Wywołanie sprawdzania wizyt
+      await checkAndUpdateVisits(uid);
     });
 
     return () => unsubscribe();
   }, []);
 
   const loadProfileData = async (ref) => {
-    const docSnap = await getDoc(ref); // Użycie getDoc
+    const docSnap = await getDoc(ref);
     const data = docSnap.data();
     setName(data.name);
     setSurname(data.surname);
@@ -56,9 +56,7 @@ function Dashboard() {
       const visitDate = new Date(`${visitData.date}T${visitData.time}:00`);
       console.log("Data wizyty:", visitDate.toISOString(), "Aktualny czas:", currentTime.toISOString());
   
-      // Sprawdzamy, czy data wizyty jest mniejsza niż aktualny czas
       if (visitDate.toISOString() < currentTime.toISOString()) {
-        // Zmieniamy status wizyty na "Zakończona" i uzupełniamy prescriptionCode
         await updateDoc(doc.ref, {
           status: "Zakończona",
           prescriptionCode: generatePrescriptionCode(),
@@ -72,7 +70,7 @@ function Dashboard() {
 
   const onClickLogout = () => {
     signOut(auth);
-    navigateTo("/"); // Przekierowanie do strony logowania
+    navigateTo("/");
   };
 
   return (

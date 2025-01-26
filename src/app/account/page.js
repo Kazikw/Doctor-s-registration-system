@@ -51,6 +51,12 @@ export default function Account() {
               <p><strong>Imię:</strong> {userData.name}</p>
               <p><strong>Nazwisko:</strong> {userData.surname}</p>
               <p><strong>PESEL:</strong> {userData.pesel}</p>
+              <p><strong>Alergie:</strong> {userData.allergies}</p>
+              <p>{userData.allergiesInfo}</p>
+              <p><strong>Leki:</strong> {userData.medications}</p>
+              <p>{userData.medicationsInfo}</p>
+              <p><strong>Choroby przewlekłe:</strong> {userData.chronicDiseases}</p>
+              <p>{userData.diseasesInfo}</p>
             </>
           ) : (
             <p>Brak danych użytkownika.</p>

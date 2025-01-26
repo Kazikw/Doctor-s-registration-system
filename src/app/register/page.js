@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, createUserWithEmailAndPassword } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -12,13 +12,33 @@ function Register(props) {
   const [surname, setSurname] = useState("");
   const [pesel, setPesel] = useState("");
   const [email, setEmail] = useState("");
+  const [medications, setMedications] = useState("");
+  const [chronicDiseases, setChronicDiseases] = useState("");
+  const [allergies, setAllergies] = useState("");
+  const [allergiesInfo, setAllergiesInfo] = useState("");
+  const [medicationsInfo, setMedicationsInfo] = useState("");
+  const [diseasesInfo, setDiseasesInfo] = useState("");
+
   const [passwordError, setPasswordError] = useState("");
   const [nameError, setNameError] = useState("");
   const [surnameError, setSurnameError] = useState("");
   const [peselError, setPeselError] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [medicationsError, setMedicationsError] = useState("");
+  const [chronicDiseasesError, setChronicDiseasesError] = useState("");
+  const [allergiesError, setAllergiesError] = useState("");
+  const [additionalInfoError, setAdditionalInfoError] = useState("");
 
+  const [showMedicationsInfo, setShowMedicationsInfo] = useState(false);
+  const [showAllergiesInfo, setShowAllergiesInfo] = useState(false);
+  const [showDiseasesInfo, setShowDiseasesInfo] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setShowAllergiesInfo(allergies === "Tak");
+    setShowDiseasesInfo(chronicDiseases === "Tak");
+    setShowMedicationsInfo(medications === "Tak");
+  }, [medications, chronicDiseases, allergies]);
 
   const handleRegister = async () => {
     setNameError("");
@@ -65,6 +85,12 @@ function Register(props) {
         name,
         surname,
         pesel,
+        medications,
+        chronicDiseases,
+        allergies,
+        allergiesInfo,
+        medicationsInfo,
+        diseasesInfo,
         email: user.email,
         uid: user.uid
       });
@@ -116,6 +142,78 @@ function Register(props) {
           />
           <label className={styles.errorLabel}>{peselError}</label>
         </div>
+        <div className={styles.inputContainer}>
+          <select
+            value={medications}
+            onChange={(ev) => setMedications(ev.target.value)}
+            className={styles.inputBox}
+          >
+            <option value="">Czy przyjmuje Pan/Pani leki?</option>
+            <option value="Tak">Tak</option>
+            <option value="Nie">Nie</option>
+          </select>
+          <label className={styles.errorLabel}>{medicationsError}</label>
+        </div>
+        {showMedicationsInfo && (
+          <div className={styles.inputContainer}>
+          <textarea
+            value={medicationsInfo}
+            type="text"
+            placeholder="Proszę podać szczegóły (leki)"
+            onChange={(ev) => setMedicationsInfo(ev.target.value)}
+            className={styles.inputBox}
+            rows={2}
+          />
+        </div>
+        )}
+        <div className={styles.inputContainer}>
+          <select
+            value={chronicDiseases}
+            onChange={(ev) => setChronicDiseases(ev.target.value)}
+            className={styles.inputBox}
+          >
+            <option value="">Czy choruje Pan/Pani na choroby przewlekłe?</option>
+            <option value="Tak">Tak</option>
+            <option value="Nie">Nie</option>
+          </select>
+          <label className={styles.errorLabel}>{chronicDiseasesError}</label>
+        </div>
+        {showDiseasesInfo && (
+          <div className={styles.inputContainer}>
+          <textarea
+            value={diseasesInfo}
+            type="text"
+            placeholder="Proszę podać szczegóły (choroby przewlekłe)"
+            onChange={(ev) => setDiseasesInfo(ev.target.value)}
+            className={styles.inputBox}
+            rows={2}
+          />
+        </div>
+        )}
+        <div className={styles.inputContainer}>
+          <select
+            value={allergies}
+            onChange={(ev) => setAllergies(ev.target.value)}
+            className={styles.inputBox}
+          >
+            <option value="">Czy ma Pan/Pani alergie?</option>
+            <option value="Tak">Tak</option>
+            <option value="Nie">Nie</option>
+          </select>
+          <label className={styles.errorLabel}>{allergiesError}</label>
+        </div>
+        {showAllergiesInfo && (
+          <div className={styles.inputContainer}>
+          <textarea
+            value={allergiesInfo}
+            type="text"
+            placeholder="Proszę podać szczegóły (alergie)"
+            onChange={(ev) => setAllergiesInfo(ev.target.value)}
+            className={styles.inputBox}
+            rows={2}
+          />
+        </div>
+        )}
         <div className={styles.inputContainer}>
           <input
             value={email}
