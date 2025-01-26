@@ -30,8 +30,6 @@ function CancelDoctor() {
 
       try {
         const snapshot = await getDocs(userAppointmentsRef);
-        const today = new Date();
-
         const appointmentsData = snapshot.docs
           .map((doc) => ({
             id: doc.id,
@@ -39,8 +37,10 @@ function CancelDoctor() {
             specialization: doc.data().specialization,
             date: doc.data().date,
             time: doc.data().time,
+            status: doc.data().status, // Pobieranie statusu wizyty
           }))
-    
+          .filter((appointment) => appointment.status === "Zapisano na wizytę"); // Filtrowanie wizyt
+
         setAppointments(appointmentsData);
       } catch (error) {
         console.error("Błąd podczas pobierania danych: ", error);
@@ -63,7 +63,9 @@ function CancelDoctor() {
       const appointmentRef = doc(db, "wizyty", user.uid, "Wizyty", appointmentId);
       await deleteDoc(appointmentRef);
 
-      setAppointments((prevAppointments) => prevAppointments.filter((appointment) => appointment.id !== appointmentId));
+      setAppointments((prevAppointments) =>
+        prevAppointments.filter((appointment) => appointment.id !== appointmentId)
+      );
     } catch (error) {
       console.error("Błąd podczas usuwania wizyty: ", error);
     }
