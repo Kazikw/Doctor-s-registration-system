@@ -81,7 +81,7 @@ function NotificationsBox() {
             messages.push(`Wynik badania "${result.name}" jest do odbioru.`);
           } else if (result.status === "Zapisano na badanie") {
             messages.push(
-              `Zapisano na badanie "${result.name}" dnia "${result.date}" o godzinie "${result.time}".`
+              `Nadchodzące badanie "${result.name}" dnia "${result.date}" o godzinie "${result.time}".`
             );
           }
         });
