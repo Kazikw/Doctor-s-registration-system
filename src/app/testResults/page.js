@@ -63,12 +63,24 @@ function TestResults() {
     doc.text(`Nazwa badania: ${test.name}`, 20, 60);
     doc.text(`Status: ${test.status}`, 20, 70);
 
+    const rawResults = test.resultDetails;
+    const resultItems = rawResults.split(';').map(item => item.trim()).filter(item => item !== "");
+
+    let allLines = [];
+    resultItems.forEach(item => {
+      const lines = doc.splitTextToSize(`• ${item}`, 170);
+      allLines = allLines.concat(lines);
+    });
+
+    
     doc.setFontSize(14);
     doc.text("Szczegoly wynikow:", 20, 90);
+    doc.text("Parametr        Wynik        Jednostka        Normy", 20, 100)
     doc.setFontSize(12);
-    const results = test.resultDetails || "Brak szczegolowych danych";
-    const lines = doc.splitTextToSize(results, 170); 
-    doc.text(lines, 20, 100);
+    
+    // const results = test.resultDetails || "Brak szczegolowych danych";
+    // const lines = doc.splitTextToSize(results, 170); 
+    doc.text(allLines, 20, 110);
 
  
     doc.save(`${test.name}_wynik.pdf`);
@@ -103,7 +115,7 @@ function TestResults() {
                     <td>{test.date}</td>
                     <td>{test.status}</td>
                     <td>
-                      {test.status === "Zakonczone" ? (
+                      {test.status.includes("gotowe") ? (
                         <button
                           className={styles.inputButton}
                           onClick={() => generatePDF(test)}
