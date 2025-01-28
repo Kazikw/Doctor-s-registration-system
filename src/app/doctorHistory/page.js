@@ -24,7 +24,7 @@ function DoctorHistory() {
       const db = getFirestore();
       const historyRef = collection(db, 'wizyty', user.uid, 'Wizyty');
 
-      const q = query(historyRef, where('status', '==', 'Zakonczona'));
+      const q = query(historyRef, where('status', '==', 'Zakończona'));
 
       try {
         const snapshot = await getDocs(q);

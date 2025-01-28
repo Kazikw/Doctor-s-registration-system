@@ -37,7 +37,7 @@ function CancelDoctor() {
             specialization: doc.data().specialization,
             date: doc.data().date,
             time: doc.data().time,
-            status: doc.data().status, // Pobieranie statusu wizyty
+            status: doc.data().status,
           }))
           .filter((appointment) => appointment.status === "Zapisano na wizytę"); // Filtrowanie wizyt
 
