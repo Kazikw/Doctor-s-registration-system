@@ -8,7 +8,7 @@
     right: 0;
     z-index: 100;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
@@ -56,6 +56,18 @@
     align-items: center;
     gap: 10px; 
   }
+
+  .adminButton {
+    background-color: #51a2f8;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-left: auto;
+}
   
   .titleRow {
     display: flex;

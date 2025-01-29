@@ -1,0 +1,291 @@
+.historyContainer {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #a8f3f9, white);
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.header {
+  background-color: white;
+  padding: 20px 40px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.logo {
+  font-size: 36px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.mainContainer {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.titleContainer h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #304357;
+  margin-bottom: 20px;
+}
+
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.resultsTable th,
+.resultsTable td {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 12px;
+}
+
+.resultsTable th {
+  background-color: #d5f6f8;
+  color: rgb(46, 45, 45);
+  font-size: 1.1rem;
+}
+
+.resultsTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.resultsTable tr:hover {
+  background-color: #f7f9fc;
+}
+
+.inputButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.inputButton:hover {
+  background-color: #0056b3;
+}
+
+.buttonContainer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.buttonContainer .inputButton {
+  max-width: 250px;
+  width: 100%;
+}
+
+.editInput {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+  display: inline-block;
+}
+
+.Zapisanonabadanie {
+  background-color: #FFD700;
+  color: #000;
+}
+
+.Wynikigotowe {
+  background-color: #90EE90;
+  color: #000;
+}
+
+.statusSelect {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.sectionCard {
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.userHeader {
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.dataContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.resultsTable th, .resultsTable td {
+  text-align: center;
+}
+
+.resultsTable th {
+  background-color: #d5f6f8;
+}
+
+.resultsTable tr:hover {
+  background-color: #f2f2f2;
+}
+
+.toggleButton,
+.toggleButtonExpanded {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggleButtonExpanded {
+  background-color: #0056b3;
+}
+
+.toggleButton:hover,
+.toggleButtonExpanded:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.toggleButton:focus {
+  outline: none;
+}
+
+.toggleIcon {
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg);
+  margin-right: 8px;
+  transition: transform 0.3s ease;
+}
+
+.toggleButtonExpanded .toggleIcon {
+  transform: rotate(135deg);
+}
+
+.dataContainer {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sectionCard {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.editButton {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.saveButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.editButton:hover {
+  background-color: #ee5651;
+  transform: scale(1.05);
+}
+
+.saveButton:hover {
+  background-color: #419b44;
+  transform: scale(1.05);
+}
+
+
+.saveButton[style*="inline"] {
+  display: inline-block;
+}
+
+.editInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.editInput:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+.userDataRow {
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+
+.h3 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.editButton {
+  background-color: #007bff;
+}
+
+.editButton:hover {
+  background-color: #0056b3;
+}

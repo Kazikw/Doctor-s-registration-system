@@ -22,9 +22,18 @@ function Home(props) {
     <div className={styles.mainContainer}>
       <div className={styles.header}>
         <h1>HankMed</h1>
-      </div>
+          <input
+              className={styles.adminButton}
+              type="button"
+              onClick={onButtonClickAdmin}
+              value="Admin"
+          />
 
-     
+      </div>
+        
+          
+    
+
       <div className={styles.titleContainer}>
         <h2>Witaj w aplikacji HankMed!</h2>
       </div>
@@ -45,15 +54,7 @@ function Home(props) {
           </div>
         </div>
         
-        <div className={styles.formContainer}>
         
-          <input
-              className={styles.inputButton}
-              type="button"
-              onClick={onButtonClickAdmin}
-              value="Admin"
-          />
-       </div>
         <div className={styles.formContainer}>
           <div className={styles.titleRow}>
             <p>Mam już konto:</p>
