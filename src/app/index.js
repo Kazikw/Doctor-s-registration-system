@@ -15,6 +15,9 @@ function Home(props) {
     router.push("/register");
   }
 
+  function onButtonClickAdmin() {
+    router.push("/adminLogin");
+  }
   return (
     <div className={styles.mainContainer}>
       <div className={styles.header}>
@@ -41,11 +44,16 @@ function Home(props) {
             />
           </div>
         </div>
-
-      
-        <div className={styles.separator}></div>
-
-       
+        
+        <div className={styles.formContainer}>
+        
+          <input
+              className={styles.inputButton}
+              type="button"
+              onClick={onButtonClickAdmin}
+              value="Admin"
+          />
+       </div>
         <div className={styles.formContainer}>
           <div className={styles.titleRow}>
             <p>Mam już konto:</p>
