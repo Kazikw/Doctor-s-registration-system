@@ -1,3 +1,8 @@
+The "Doctor's Appointment Registration System" project is a final project for a university course. The goal of the project was to create an application that allows users to register for appointments with a doctor.
+
+My task in the project was integration with the Firebase database, which enabled storing and managing user and appointment data.
+
+
 <<<<<<< HEAD
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
